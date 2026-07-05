@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حسابي - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    <div class="profile-layout">
+        <!-- Sidebar -->
+        <aside class="profile-sidebar">
+            <div class="profile-avatar">
+                {% if user.profile.photo %}
+                    <img src="{{ user.profile.photo.url }}" class="avatar-img">
+                {% else %}
+                    <div class="avatar-circle">{{ user.first_name|first|default:user.username|first }}</div>
+                {% endif %}
+            </div>
+            <h3 class="profile-name">{{ user.first_name|default:user.username }}</h3>
+            <p class="profile-phone">{{ user.profile.phone|default:user.email }}</p>
+
+            <div class="profile-tabs">
+                <button class="profile-tab active" data-tab="ads">📋 إعلاناتي</button>
+                <button class="profile-tab" data-tab="balance">💰 رصيد حسابي</button>
+                <button class="profile-tab" data-tab="favorites">⭐ المفضلة</button>
+                <a href="{% url 'logout' %}" class="profile-tab logout-tab">🚪 تسجيل الخروج</a>
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <main class="profile-content">
+            <div id="tab-ads" class="tab-content active">
+                <h2>إعلاناتي</h2>
+
+                <div class="sub-tabs">
+                    <button class="sub-tab active" data-subtab="active">🟢 الفعالة ({{ ads_active|length }})</button>
+                    <button class="sub-tab" data-subtab="pending">⏳ قيد الانتظار ({{ ads_pending|length }})</button>
+                    <button class="sub-tab" data-subtab="draft">📝 مسودات ({{ ads_draft|length }})</button>
+                    <button class="sub-tab" data-subtab="archived">🗂 أرشيف ({{ ads_archived|length }})</button>
+                </div>
+
+                <div class="subtab-content" id="subtab-active">
+                    {% if ads_active %}
+                    <div class="my-ads-list">
+                        {% for ad in ads_active %}
+                        <div class="my-ad-item">
+                            <div class="my-ad-img">
+                                {% if ad.image_0 %}
+                                    <img src="{{ ad.image_0.url }}">
+                                {% else %}
+                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="my-ad-info">
+                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
+                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
+                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
+                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
+                            </div>
+                            <div class="my-ad-stats">
+                                <span class="ad-view-count">👁 {{ ad.views }}</span>
+                            </div>
+                            <div class="my-ad-actions">
+                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
+                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
+                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="profile-empty">
+                        <p>لا توجد إعلانات فعالة</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="subtab-content" id="subtab-pending">
+                    {% if ads_pending %}
+                    <div class="my-ads-list">
+                        {% for ad in ads_pending %}
+                        <div class="my-ad-item">
+                            <div class="my-ad-img">
+                                {% if ad.image_0 %}
+                                    <img src="{{ ad.image_0.url }}">
+                                {% else %}
+                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="my-ad-info">
+                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
+                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
+                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
+                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
+                            </div>
+                            <div class="my-ad-stats">
+                                <span class="ad-view-count">👁 {{ ad.views }}</span>
+                            </div>
+                            <div class="my-ad-actions">
+                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
+                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
+                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="profile-empty">
+                        <p>لا توجد إعلانات قيد الانتظار</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="subtab-content" id="subtab-draft">
+                    {% if ads_draft %}
+                    <div class="my-ads-list">
+                        {% for ad in ads_draft %}
+                        <div class="my-ad-item">
+                            <div class="my-ad-img">
+                                {% if ad.image_0 %}
+                                    <img src="{{ ad.image_0.url }}">
+                                {% else %}
+                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="my-ad-info">
+                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
+                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
+                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
+                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
+                            </div>
+                            <div class="my-ad-stats">
+                                <span class="ad-view-count">👁 {{ ad.views }}</span>
+                            </div>
+                            <div class="my-ad-actions">
+                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
+                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
+                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="profile-empty">
+                        <p>لا توجد مسودات</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="subtab-content" id="subtab-archived">
+                    {% if ads_archived %}
+                    <div class="my-ads-list">
+                        {% for ad in ads_archived %}
+                        <div class="my-ad-item">
+                            <div class="my-ad-img">
+                                {% if ad.image_0 %}
+                                    <img src="{{ ad.image_0.url }}">
+                                {% else %}
+                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="my-ad-info">
+                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
+                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
+                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
+                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
+                            </div>
+                            <div class="my-ad-stats">
+                                <span class="ad-view-count">👁 {{ ad.views }}</span>
+                            </div>
+                            <div class="my-ad-actions">
+                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
+                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
+                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="profile-empty">
+                        <p>لا توجد إعلانات في الأرشيف</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="tab-balance" class="tab-content">
+                <h2>رصيد حسابي</h2>
+                <p class="tab-desc">رصيدك الحالي وتفاصيل الفواتير</p>
+                <div class="balance-card">
+                    <p class="balance-label">الرصيد الحالي</p>
+                    <p class="balance-amount">0 ريال</p>
+                </div>
+            </div>
+
+            <div id="tab-favorites" class="tab-content">
+                <h2>المفضلة</h2>
+                <p class="tab-desc">الإعلانات التي حفظتها للمتابعة لاحقاً</p>
+                <div class="profile-empty">
+                    <p>لا توجد إعلانات في المفضلة</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                const tabId = this.dataset.tab;
+                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('tab-' + tabId).classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.sub-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                const sub = this.dataset.subtab;
+                document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.subtab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('subtab-' + sub).classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>

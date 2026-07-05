@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أطلب - إعلانات السعودية</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-right">
+            <span class="logo">أطلب</span>
+        </div>
+        <div class="nav-left">
+
+            <!-- البلد -->
+            <div class="dropdown">
+                <button class="nav-btn dropdown-trigger" data-dropdown="country">🇸🇦 المملكة العربية السعودية</button>
+                <div class="dropdown-menu" id="country-dropdown">
+                    <div class="dropdown-item" data-flag="🇸🇦">🇸🇦 المملكة العربية السعودية</div>
+                    <div class="dropdown-item" data-flag="🇦🇪">🇦🇪 الإمارات العربية المتحدة</div>
+                    <div class="dropdown-item" data-flag="🇶🇦">🇶🇦 قطر</div>
+                    <div class="dropdown-item" data-flag="🇰🇼">🇰🇼 الكويت</div>
+                    <div class="dropdown-item" data-flag="🇧🇭">🇧🇭 البحرين</div>
+                    <div class="dropdown-item" data-flag="🇴🇲">🇴🇲 عمان</div>
+                    <div class="dropdown-item" data-flag="🇪🇬">🇪🇬 مصر</div>
+                    <div class="dropdown-item" data-flag="🇯🇴">🇯🇴 الأردن</div>
+                    <div class="dropdown-item" data-flag="🇮🇶">🇮🇶 العراق</div>
+                    <div class="dropdown-item" data-flag="🇸🇾">🇸🇾 سوريا</div>
+                    <div class="dropdown-item" data-flag="🇱🇧">🇱🇧 لبنان</div>
+                    <div class="dropdown-item" data-flag="🇾🇪">🇾🇪 اليمن</div>
+                    <div class="dropdown-item" data-flag="🇵🇸">🇵🇸 فلسطين</div>
+                    <div class="dropdown-item" data-flag="🇩🇿">🇩🇿 الجزائر</div>
+                    <div class="dropdown-item" data-flag="🇲🇦">🇲🇦 المغرب</div>
+                    <div class="dropdown-item" data-flag="🇹🇳">🇹🇳 تونس</div>
+                    <div class="dropdown-item" data-flag="🇱🇾">🇱🇾 ليبيا</div>
+                    <div class="dropdown-item" data-flag="🇸🇩">🇸🇩 السودان</div>
+                </div>
+            </div>
+
+            <!-- تسجيل الدخول / حسابي -->
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+                <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-btn">تسجيل الدخول</a>
+            {% endif %}
+
+            <!-- اللغة -->
+            <div class="dropdown">
+                <button class="nav-btn dropdown-trigger" data-dropdown="lang">🌐 اللغة</button>
+                <div class="dropdown-menu" id="lang-dropdown">
+                    <div class="dropdown-item" data-lang="ar">🇸🇦 العربية</div>
+                    <div class="dropdown-item" data-lang="en">🇬🇧 English</div>
+                    <div class="dropdown-item" data-lang="fr">🇫🇷 Français</div>
+                    <div class="dropdown-item" data-lang="tr">🇹🇷 Türkçe</div>
+                    <div class="dropdown-item" data-lang="ur">🇵🇰 اردو</div>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    {% if messages %}
+        <div class="messages-bar">
+            {% for msg in messages %}
+                <div class="msg {{ msg.tags }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- HERO -->
+    <div class="hero-wrapper">
+        <section class="hero">
+            <div class="hero-right">
+                <h1 class="hero-logo">أطلب</h1>
+                <p class="hero-sub">إعلانات مبوبة السعودية</p>
+            </div>
+            <div class="hero-left">
+                <a href="{% url 'create_ad' %}" class="hero-btn">+ أضف إعلانك مجاناً</a>
+            </div>
+        </section>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <path fill="#f5f7fa" d="M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-layout">
+        <aside class="sidebar">
+
+            <form method="get" class="filter-form">
+
+            <div class="filter-toggles">
+                <button type="button" class="toggle-btn {% if filter_data.search_in == 'فرص عمل' or not filter_data.search_in %}active{% endif %}" data-filter="search_in" data-value="فرص عمل">فرص عمل</button>
+                <button type="button" class="toggle-btn {% if filter_data.search_in == 'يطلب عمل' %}active{% endif %}" data-filter="search_in" data-value="يطلب عمل">يطلب عمل</button>
+            </div>
+
+            <h3 class="filter-title">البحث المتقدم</h3>
+
+            <div class="filter-group">
+                <label>بحث في</label>
+                <select name="search_in" class="filter-input">
+                    <option value="">كل الإعلانات</option>
+                    <option value="وظائف" {% if filter_data.search_in == 'وظائف' %}selected{% endif %}>الوظائف</option>
+                    <option value="خدمات" {% if filter_data.search_in == 'خدمات' %}selected{% endif %}>الخدمات</option>
+                    <option value="يطلب عمل" {% if filter_data.search_in == 'يطلب عمل' %}selected{% endif %}>طلب عمل</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>القسم</label>
+                <select name="section" class="filter-input">
+                    <option value="">كل الأقسام</option>
+                    <option value="عقارات" {% if filter_data.section == 'عقارات' %}selected{% endif %}>عقارات</option>
+                    <option value="سيارات" {% if filter_data.section == 'سيارات' %}selected{% endif %}>سيارات</option>
+                    <option value="وظائف" {% if filter_data.section == 'وظائف' %}selected{% endif %}>وظائف</option>
+                    <option value="خدمات" {% if filter_data.section == 'خدمات' %}selected{% endif %}>خدمات</option>
+                    <option value="منوعات" {% if filter_data.section == 'منوعات' %}selected{% endif %}>منوعات</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>المجال</label>
+                <select name="specialty" class="filter-input">
+                    <option value="">كل المجالات</option>
+                    <option value="البرمجة" {% if filter_data.specialty == 'البرمجة' %}selected{% endif %}>البرمجة</option>
+                    <option value="التصميم" {% if filter_data.specialty == 'التصميم' %}selected{% endif %}>التصميم</option>
+                    <option value="الكمبيوتر" {% if filter_data.specialty == 'الكمبيوتر' %}selected{% endif %}>الكمبيوتر</option>
+                    <option value="الهندسة" {% if filter_data.specialty == 'الهندسة' %}selected{% endif %}>الهندسة</option>
+                    <option value="المحاسبة" {% if filter_data.specialty == 'المحاسبة' %}selected{% endif %}>المحاسبة</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>بحث عن كلمات</label>
+                <input type="text" name="q" class="filter-input" placeholder="كلمة مفتاحية..." value="{{ filter_data.q }}">
+            </div>
+
+            <div class="filter-group">
+                <label>ترتيب حسب</label>
+                <select name="sort" class="filter-input">
+                    <option value="-created_at" {% if filter_data.sort == '-created_at' %}selected{% endif %}>التاريخ (الأحدث)</option>
+                    <option value="created_at" {% if filter_data.sort == 'created_at' %}selected{% endif %}>التاريخ (الأقدم)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="filter-btn">🔍 تحديث حاصل البحث</button>
+
+            </form>
+
+            <div class="quick-links">
+                <h4>ربما ترغب بالاطلاع على</h4>
+                <a href="{% url 'home' %}?search_in=وظائف" class="quick-link">فرص عمل</a>
+                <a href="{% url 'home' %}?search_in=يطلب عمل" class="quick-link">يطلب عمل</a>
+                <a href="{% url 'home' %}?search_in=خدمات" class="quick-link">الخدمات</a>
+            </div>
+
+            <div class="categories-section">
+                <h4>لائحة الأقسام</h4>
+                <a href="{% url 'home' %}" class="cat-link"><span class="cat-icon">📋</span> الكل</a>
+                <a href="{% url 'home' %}?q=حسابات" class="cat-link"><span class="cat-icon">📊</span> حسابات</a>
+                <a href="{% url 'home' %}?q=مبيعات" class="cat-link"><span class="cat-icon">📈</span> مبيعات وتسويق</a>
+                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🎨</span> تصميم</a>
+                <a href="{% url 'home' %}?specialty=البرمجة" class="cat-link"><span class="cat-icon">💻</span> برمجة</a>
+                <a href="{% url 'home' %}?specialty=الكمبيوتر" class="cat-link"><span class="cat-icon">🖥️</span> كمبيوترات</a>
+                <a href="{% url 'home' %}?section=خدمات" class="cat-link"><span class="cat-icon">✈️</span> سياحة ومطاعم</a>
+                <a href="{% url 'home' %}?q=طب" class="cat-link"><span class="cat-icon">🏥</span> طب وتمريض</a>
+                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🌐</span> تصميم مواقع</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="ابحث في الإعلانات...">
+                <button class="search-btn">بحث</button>
+            </div>
+
+            <div class="sections-tabs">
+                <button class="tab active">الوظائف</button>
+                <button class="tab">الخدمات</button>
+                <button class="tab">طلب عمل</button>
+            </div>
+
+            <div class="results-count">{{ ads|length }} نتيجة</div>
+
+            <div class="ads-grid">
+                {% for ad in ads %}
+                <a href="{% url 'ad_detail' ad.id %}" class="ad-card">
+                    <div class="ad-img-wrap">
+                        {% if ad.image_0 %}
+                            <img src="{{ ad.image_0.url }}" alt="إعلان">
+                        {% else %}
+                            <div class="ad-placeholder">{{ ad.purpose|slice:":2" }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="ad-body">
+                        <h4>{{ ad.title|default:ad.text_ar|truncatechars:40 }}</h4>
+                        <p class="ad-text">{{ ad.text_ar|truncatechars:80 }}</p>
+                        <p class="ad-price">{{ ad.purpose }}</p>
+                        <p class="ad-meta">{{ ad.specialty }} | {{ ad.created_at|timesince }}</p>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="ad-empty">لا توجد إعلانات بعد</div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('click', function(e) {
+            const trigger = e.target.closest('.dropdown-trigger');
+            if (trigger) {
+                const id = trigger.dataset.dropdown + '-dropdown';
+                const menu = document.getElementById(id);
+                if (menu) {
+                    const isOpen = menu.classList.contains('show');
+                    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+                    if (!isOpen) menu.classList.add('show');
+                    e.stopPropagation();
+                }
+                return;
+            }
+            const item = e.target.closest('.dropdown-item');
+            if (item) {
+                const menu = item.closest('.dropdown-menu');
+                const trigger = menu.parentElement.querySelector('.dropdown-trigger');
+                if (trigger) {
+                    trigger.innerHTML = item.innerHTML;
+                }
+                menu.classList.remove('show');
+                e.stopPropagation();
+                return;
+            }
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
+        });
+
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const filterName = this.dataset.filter;
+                const filterValue = this.dataset.value;
+                document.querySelector(`select[name="${filterName}"]`).value = filterValue;
+                this.closest('form').submit();
+            });
+        });
+    </script>
+</body>
+</html>

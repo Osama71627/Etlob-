@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل دخول - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="auth-body">
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="{% url 'home' %}" class="auth-logo">أطلب</a>
+                <h2>تسجيل دخول</h2>
+                <p>مرحباً بعودتك! أدخل بياناتك للمتابعة</p>
+            </div>
+
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="msg {{ msg.tags }}" style="margin-bottom:1rem">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                <div class="auth-field">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" name="email" class="form-input" placeholder="example@email.com" required>
+                </div>
+
+                <div class="auth-field">
+                    <label>كلمة السر</label>
+                    <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                </div>
+
+                <div class="auth-remember">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember" checked>
+                        <span>حفظ تسجيل دخولي</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-submit">تسجيل الدخول</button>
+
+                <p class="auth-switch">ليس لديك حساب؟ <a href="{% url 'signup' %}">إنشاء حساب جديد</a></p>
+            </form>
+
+            <div class="auth-divider"><span>أو</span></div>
+
+            <div class="auth-social">
+                <button class="social-btn google">
+                    <span class="social-icon">G</span>
+                    تسجيل الدخول بواسطة جوجل
+                </button>
+                <button class="social-btn facebook">
+                    <span class="social-icon">f</span>
+                    تسجيل الدخول بواسطة الفيس بوك
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

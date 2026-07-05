@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="auth-body">
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="{% url 'home' %}" class="auth-logo">أطلب</a>
+                <h2>إنشاء حساب جديد</h2>
+                <p>أنشئ حسابك واستمتع بخدمات أطلب</p>
+            </div>
+
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="msg {{ msg.tags }}" style="margin-bottom:1rem">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" class="auth-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="auth-field">
+                    <label>الاسم الكامل</label>
+                    <input type="text" name="fullname" class="form-input" placeholder="الاسم" required>
+                </div>
+                <div class="auth-field">
+                    <label>رقم الجوال</label>
+                    <input type="text" name="phone" class="form-input" placeholder="05xxxxxxxx" required>
+                </div>
+                <div class="auth-field">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" name="email" class="form-input" placeholder="example@email.com" required>
+                </div>
+                <div class="auth-field">
+                    <label>الصورة الشخصية</label>
+                    <input type="file" name="photo" class="form-input" accept="image/*">
+                </div>
+                <div class="auth-field">
+                    <label>كلمة السر</label>
+                    <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <div class="auth-field">
+                    <label>تأكيد كلمة السر</label>
+                    <input type="password" name="confirm_password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="auth-submit">إنشاء حساب</button>
+                <p class="auth-switch">لديك حساب؟ <a href="{% url 'login' %}">تسجيل دخول</a></p>
+            </form>
+
+            <div class="auth-divider"><span>أو</span></div>
+
+            <div class="auth-social">
+                <button class="social-btn google"><span class="social-icon">G</span> إنشاء حساب بواسطة جوجل</button>
+                <button class="social-btn facebook"><span class="social-icon">f</span> إنشاء حساب بواسطة الفيس بوك</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

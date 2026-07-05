@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة إعلان - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+                <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-btn">تسجيل الدخول</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="create-ad-page">
+        <div class="create-ad-card">
+            <div class="create-ad-header">
+                <h1>+ إضافة إعلان جديد</h1>
+                <p>املأ البيانات التالية لنشر إعلانك</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-section">
+                    <h3>تحديد غرض الإعلان</h3>
+                    <div class="dropdown-wrap">
+                        <button type="button" class="dropdown-btn" data-target="purpose">
+                            <span>اختر غرض الإعلان</span>
+                            <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
+                        </button>
+                        <ul class="dropdown-menu" data-name="purpose">
+                            <li class="has-sub" data-value="عقارات">
+                                <span>🏠 عقارات</span>
+                                <ul class="sub-menu">
+                                    <li data-sub-value="شقة">شقة</li>
+                                    <li data-sub-value="فيلا">فيلا</li>
+                                    <li data-sub-value="أرض">أرض</li>
+                                    <li data-sub-value="محل تجاري">محل تجاري</li>
+                                </ul>
+                            </li>
+                            <li class="has-sub" data-value="سيارات">
+                                <span>🚗 سيارات</span>
+                                <ul class="sub-menu">
+                                    <li data-sub-value="تويوتا">تويوتا</li>
+                                    <li data-sub-value="هوندا">هوندا</li>
+                                    <li data-sub-value="نيسان">نيسان</li>
+                                    <li data-sub-value="مرسيدس">مرسيدس</li>
+                                </ul>
+                            </li>
+                            <li class="has-sub" data-value="وظائف">
+                                <span>💼 وظائف</span>
+                                <ul class="sub-menu">
+                                    <li data-sub-value="اعلان عن وظيفة شاغرة">اعلان عن وظيفة شاغرة</li>
+                                    <li data-sub-value="ابحث عن عمل">ابحث عن عمل</li>
+                                    <li data-sub-value="عرض خدمة">عرض خدمة</li>
+                                </ul>
+                            </li>
+                            <li class="has-sub" data-value="خدمات">
+                                <span>🛠️ خدمات</span>
+                                <ul class="sub-menu">
+                                    <li data-sub-value="تنظيف">تنظيف</li>
+                                    <li data-sub-value="صيانة">صيانة</li>
+                                    <li data-sub-value="نقل">نقل</li>
+                                    <li data-sub-value="توصيل">توصيل</li>
+                                </ul>
+                            </li>
+                            <li class="has-sub" data-value="منوعات">
+                                <span>📦 منوعات</span>
+                                <ul class="sub-menu">
+                                    <li data-sub-value="أثاث">أثاث</li>
+                                    <li data-sub-value="إلكترونيات">إلكترونيات</li>
+                                    <li data-sub-value="ملابس">ملابس</li>
+                                    <li data-sub-value="حيوانات">حيوانات</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <input type="hidden" name="purpose" value="">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>حدد القسم المناسب لعرض الإعلان</h3>
+                    <div class="dropdown-wrap">
+                        <button type="button" class="dropdown-btn" data-target="section">
+                            <span>اختر القسم المناسب</span>
+                            <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
+                        </button>
+                        <ul class="dropdown-menu" data-name="section">
+                            <li data-value="عقارات">🏠 عقارات</li>
+                            <li data-value="سيارات">🚗 سيارات</li>
+                            <li data-value="وظائف">💼 وظائف</li>
+                            <li data-value="خدمات">🛠️ خدمات</li>
+                            <li data-value="منوعات">📦 منوعات</li>
+                        </ul>
+                        <input type="hidden" name="section" value="">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>أين تريد عرض إعلانك</h3>
+                    <div class="dropdown-wrap">
+                        <button type="button" class="dropdown-btn" data-target="specialty">
+                            <span>اختر المجال</span>
+                            <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
+                        </button>
+                        <ul class="dropdown-menu" data-name="specialty">
+                            <li data-value="البرمجة">💻 البرمجة</li>
+                            <li data-value="التصميم">🎨 التصميم</li>
+                            <li data-value="الكمبيوتر">🖥️ الكمبيوتر</li>
+                            <li data-value="الهندسة">🏗️ الهندسة</li>
+                            <li data-value="المحاسبة">📊 المحاسبة</li>
+                        </ul>
+                        <input type="hidden" name="specialty" value="">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>الصور</h3>
+                    <p class="field-note">الصورة الأولى هي غلاف الإعلان</p>
+                    <div class="upload-grid" id="uploadGrid">
+                        <label class="upload-box" data-index="0">
+                            <input type="file" name="image_0" accept="image/*" hidden>
+                            <span class="upload-placeholder">+</span>
+                        </label>
+                        <label class="upload-box" data-index="1">
+                            <input type="file" name="image_1" accept="image/*" hidden>
+                            <span class="upload-placeholder">+</span>
+                        </label>
+                        <label class="upload-box" data-index="2">
+                            <input type="file" name="image_2" accept="image/*" hidden>
+                            <span class="upload-placeholder">+</span>
+                        </label>
+                        <label class="upload-box" data-index="3">
+                            <input type="file" name="image_3" accept="image/*" hidden>
+                            <span class="upload-placeholder">+</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>نص الإعلان</h3>
+                    <div class="field-group">
+                        <label class="field-label">عنوان الإعلان</label>
+                        <input type="text" name="title" class="form-input" placeholder="عنوان الإعلان">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">نص الإعلان بالعربية</label>
+                        <textarea name="text_ar" class="form-textarea" rows="4" placeholder="اكتب نص الإعلان بالعربية"></textarea>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">بالإنجليزية</label>
+                        <textarea name="text_en" class="form-textarea" rows="4" placeholder="Write the ad text in English"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>معلومات الاتصال</h3>
+                    <div class="contact-row">
+                        <div class="field-group flex-1">
+                            <label class="field-label">رقم الهاتف</label>
+                            <input type="text" name="contact_phone" class="form-input" placeholder="05xxxxxxxx">
+                        </div>
+                        <div class="field-group flex-1">
+                            <label class="field-label">البريد الإلكتروني</label>
+                            <input type="email" name="contact_email" class="form-input" placeholder="example@email.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions three-btns">
+                    <button type="submit" name="action" value="draft" class="btn-outline">💾 حفظ من دون النشر</button>
+                    <button type="submit" name="action" value="publish" class="btn-primary">📢 نشر الإعلان</button>
+                    <a href="{% url 'home' %}" class="btn-outline danger">✕ خروج من دون الحفظ</a>
+                </div>
+
+                <div class="promo-strip">
+                    <button type="button" class="promo-btn">ميّز إعلانك واحصل على تفاعل أكبر</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.dropdown-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const menu = this.nextElementSibling;
+                const isOpen = menu.classList.contains('open');
+                document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+                if (!isOpen) menu.classList.add('open');
+            });
+        });
+
+        document.querySelectorAll('.dropdown-menu > li').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.classList.contains('has-sub')) return;
+            });
+        });
+
+        document.querySelectorAll('.sub-menu li').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const subVal = this.dataset.subValue;
+                const parentLi = this.closest('.has-sub');
+                const purposeMenu = parentLi.closest('.dropdown-menu');
+                const purposeName = purposeMenu.dataset.name;
+                const purposeVal = parentLi.dataset.value;
+                const purposeBtn = purposeMenu.previousElementSibling;
+                const parentLabel = parentLi.querySelector('span').textContent.trim();
+                purposeBtn.querySelector('span').textContent = parentLabel + ' › ' + subVal;
+                document.querySelector(`input[name="${purposeName}"]`).value = purposeVal;
+                document.querySelector('input[name="section"]').value = subVal;
+                const sectionWrap = document.querySelector('.dropdown-wrap:has([data-target="section"])');
+                if (sectionWrap) {
+                    sectionWrap.querySelector('.dropdown-btn span').textContent = subVal;
+                }
+                purposeMenu.classList.remove('open');
+            });
+        });
+
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+        });
+
+        document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const box = this.parentElement;
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        box.classList.add('has-image');
+                        const existing = box.querySelector('img');
+                        if (existing) existing.src = e.target.result;
+                        else {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            box.appendChild(img);
+                        }
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

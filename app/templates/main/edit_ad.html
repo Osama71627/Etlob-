@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل الإعلان - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    <div class="create-ad-page">
+        <div class="create-ad-card">
+            <div class="create-ad-header">
+                <h1>✏️ تعديل الإعلان</h1>
+                <p>قم بتحديث بيانات الإعلان ثم أعد نشره</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-section">
+                    <h3>نص الإعلان</h3>
+                    <div class="field-group">
+                        <label class="field-label">عنوان الإعلان</label>
+                        <input type="text" name="title" class="form-input" value="{{ ad.title }}" placeholder="عنوان الإعلان">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">نص الإعلان بالعربية</label>
+                        <textarea name="text_ar" class="form-textarea" rows="4" placeholder="اكتب نص الإعلان بالعربية">{{ ad.text_ar }}</textarea>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">بالإنجليزية</label>
+                        <textarea name="text_en" class="form-textarea" rows="4" placeholder="Write the ad text in English">{{ ad.text_en }}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>الصور</h3>
+                    <p class="field-note">الصورة الأولى هي غلاف الإعلان</p>
+                    <div class="upload-grid" id="uploadGrid">
+                        <label class="upload-box {% if ad.image_0 %}has-image{% endif %}" data-index="0">
+                            <input type="file" name="image_0" accept="image/*" hidden>
+                            {% if ad.image_0 %}<img src="{{ ad.image_0.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                        </label>
+                        <label class="upload-box {% if ad.image_1 %}has-image{% endif %}" data-index="1">
+                            <input type="file" name="image_1" accept="image/*" hidden>
+                            {% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                        </label>
+                        <label class="upload-box {% if ad.image_2 %}has-image{% endif %}" data-index="2">
+                            <input type="file" name="image_2" accept="image/*" hidden>
+                            {% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                        </label>
+                        <label class="upload-box {% if ad.image_3 %}has-image{% endif %}" data-index="3">
+                            <input type="file" name="image_3" accept="image/*" hidden>
+                            {% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>معلومات الاتصال</h3>
+                    <div class="contact-row">
+                        <div class="field-group flex-1">
+                            <label class="field-label">رقم الهاتف</label>
+                            <input type="text" name="contact_phone" class="form-input" value="{{ ad.contact_phone }}" placeholder="05xxxxxxxx">
+                        </div>
+                        <div class="field-group flex-1">
+                            <label class="field-label">البريد الإلكتروني</label>
+                            <input type="email" name="contact_email" class="form-input" value="{{ ad.contact_email }}" placeholder="example@email.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">الغرض</label>
+                    <input type="text" class="form-input" value="{{ ad.purpose }}" readonly>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">القسم</label>
+                    <input type="text" class="form-input" value="{{ ad.section }}" readonly>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">التخصص</label>
+                    <input type="text" class="form-input" value="{{ ad.specialty }}" readonly>
+                </div>
+
+                <div class="form-actions three-btns">
+                    <button type="submit" name="action" value="draft" class="btn-outline">💾 حفظ كمسودة</button>
+                    <button type="submit" name="action" value="publish" class="btn-primary">📢 نشر الإعلان</button>
+                    <a href="{% url 'profile' %}" class="btn-outline danger">✕ رجوع</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const box = this.parentElement;
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        box.classList.add('has-image');
+                        const existing = box.querySelector('img');
+                        if (existing) existing.src = e.target.result;
+                        else {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            box.appendChild(img);
+                        }
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

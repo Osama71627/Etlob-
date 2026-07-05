@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ad.text_ar|truncatechars:30 }} - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+                <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-btn">تسجيل الدخول</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="filter-toggles">
+                <button class="toggle-btn active">فرص عمل</button>
+                <button class="toggle-btn">يطلب عمل</button>
+            </div>
+            <h3 class="filter-title">البحث المتقدم</h3>
+            <div class="filter-group">
+                <label>بحث في</label>
+                <select class="filter-input">
+                    <option>كل الإعلانات</option>
+                    <option>الوظائف</option>
+                    <option>الخدمات</option>
+                    <option>طلب عمل</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>المستوى الوظيفي</label>
+                <select class="filter-input">
+                    <option>الكل</option>
+                    <option>مبتدئ</option>
+                    <option>متوسط</option>
+                    <option>خبير</option>
+                    <option>مدير</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>نوع الوظيفة</label>
+                <select class="filter-input">
+                    <option>الكل</option>
+                    <option>دوام كامل</option>
+                    <option>دوام جزئي</option>
+                    <option>عن بعد</option>
+                    <option>مؤقت</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>الراتب</label>
+                <div class="salary-row">
+                    <input type="text" class="filter-input" placeholder="من">
+                    <input type="text" class="filter-input" placeholder="إلى">
+                </div>
+            </div>
+            <div class="filter-group">
+                <label>المعلن</label>
+                <select class="filter-input">
+                    <option>الكل</option>
+                    <option>شركات</option>
+                    <option>أفراد</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>بحث عن كلمات</label>
+                <input type="text" class="filter-input" placeholder="كلمة مفتاحية...">
+            </div>
+            <div class="filter-group">
+                <label>ترتيب حسب</label>
+                <select class="filter-input">
+                    <option>التاريخ (الأحدث)</option>
+                    <option>الصور ثم التاريخ</option>
+                    <option>كل اللغات</option>
+                    <option>العربية أولاً</option>
+                    <option>الإنجليزية أولاً</option>
+                </select>
+            </div>
+            <button class="filter-btn">🔍 تحديث حاصل البحث</button>
+        </aside>
+
+        <main class="content detail-content">
+            <div class="detail-gallery">
+                {% if ad.image_0 %}
+                <div class="detail-main-img">
+                    <img src="{{ ad.image_0.url }}" alt="إعلان">
+                </div>
+                {% endif %}
+                <div class="detail-thumbs">
+                    {% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% endif %}
+                    {% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% endif %}
+                    {% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% endif %}
+                </div>
+            </div>
+
+            <div class="detail-meta-bar">
+                <span class="detail-purpose">{{ ad.purpose }}</span>
+                <span class="detail-section">{{ ad.section }}</span>
+                <span class="detail-specialty">{{ ad.specialty }}</span>
+            </div>
+
+            <div class="detail-body">
+                <h2>{{ ad.title|default:ad.text_ar }}</h2>
+                {% if ad.text_ar and ad.title %}
+                    <p class="detail-desc">{{ ad.text_ar }}</p>
+                {% endif %}
+                {% if ad.text_en %}
+                    <p class="detail-en">{{ ad.text_en }}</p>
+                {% endif %}
+            </div>
+
+            <div class="detail-contact">
+                <h3>معلومات الاتصال</h3>
+                <div class="contact-info-row">
+                    <span>📞 {{ ad.contact_phone|default:"غير متوفر" }}</span>
+                    <span>✉️ {{ ad.contact_email|default:"غير متوفر" }}</span>
+                </div>
+            </div>
+
+            <div class="detail-footer">
+                <span class="detail-user">👤 {{ ad.user.first_name|default:ad.user.username }}</span>
+                <span class="detail-date">{{ ad.created_at|date:"Y-m-d" }}</span>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
