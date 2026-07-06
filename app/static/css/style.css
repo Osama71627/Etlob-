@@ -1129,6 +1129,48 @@ a.ad-card {
     margin-top: 0.3rem;
 }
 
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.3rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: border 0.2s;
+    background: #fafafa;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    border-color: #1a1a2e;
+    outline: none;
+    background: #fff;
+}
+
+textarea.form-input {
+    resize: vertical;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
 .form-section {
     margin-bottom: 2rem;
 }
@@ -1277,6 +1319,57 @@ a.ad-card {
 .form-actions .btn-secondary:hover {
     border-color: #999;
     color: #333;
+}
+
+.btn-draft {
+    flex: 1;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    background: #fff;
+    color: #555;
+    transition: 0.2s;
+}
+.btn-draft:hover {
+    border-color: #999;
+    color: #333;
+}
+
+.btn-publish {
+    flex: 1;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    transition: 0.2s;
+}
+.btn-publish:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(26,26,46,0.25);
+}
+
+.btn-promote {
+    flex: 1;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(135deg, #ffd700, #ffb300);
+    color: #1a1a2e;
+    transition: 0.2s;
+}
+.btn-promote:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(255,215,0,0.35);
 }
 
 .form-actions.three-btns {

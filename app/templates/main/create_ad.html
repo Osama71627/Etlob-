@@ -81,20 +81,20 @@
 
                 <div class="form-group">
                     <label>صور الإعلان (اختياري، حتى 4 صور)</label>
-                    <div class="image-upload-grid">
-                        <label class="image-upload-box" data-index="0">
+                    <div class="upload-grid">
+                        <label class="upload-box" data-index="0">
                             <input type="file" name="image_0" accept="image/*" hidden>
                             <div class="upload-placeholder">📷</div>
                         </label>
-                        <label class="image-upload-box" data-index="1">
+                        <label class="upload-box" data-index="1">
                             <input type="file" name="image_1" accept="image/*" hidden>
                             <div class="upload-placeholder">📷</div>
                         </label>
-                        <label class="image-upload-box" data-index="2">
+                        <label class="upload-box" data-index="2">
                             <input type="file" name="image_2" accept="image/*" hidden>
                             <div class="upload-placeholder">📷</div>
                         </label>
-                        <label class="image-upload-box" data-index="3">
+                        <label class="upload-box" data-index="3">
                             <input type="file" name="image_3" accept="image/*" hidden>
                             <div class="upload-placeholder">📷</div>
                         </label>
@@ -167,7 +167,7 @@
             }
         });
 
-        document.querySelectorAll('.image-upload-box input[type="file"]').forEach(input => {
+        document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {
             input.addEventListener('change', function() {
                 const box = this.parentElement;
                 if (this.files && this.files[0]) {
