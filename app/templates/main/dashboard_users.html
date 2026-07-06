@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المستخدمين - لوحة التحكم</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-sidebar-header">
+                <span class="dash-logo">⚙️</span>
+                <h3>لوحة التحكم</h3>
+            </div>
+            <a href="{% url 'dashboard' %}" class="dash-link"><span class="dash-link-icon">📊</span> الإحصائيات</a>
+            <a href="{% url 'dashboard_users' %}" class="dash-link active"><span class="dash-link-icon">👥</span> المستخدمين</a>
+            <a href="{% url 'dashboard_ads' %}" class="dash-link"><span class="dash-link-icon">📋</span> الإعلانات</a>
+            <a href="{% url 'dashboard_subscriptions' %}" class="dash-link"><span class="dash-link-icon">💳</span> الاشتراكات</a>
+            <div class="dash-divider"></div>
+            <a href="{% url 'home' %}" class="dash-link"><span class="dash-link-icon">🏠</span> العودة للموقع</a>
+        </aside>
+
+        <main class="dash-content">
+            {% if messages %}
+            <div class="messages-bar">
+                {% for msg in messages %}
+                <div class="msg {{ msg.tags }}">{{ msg }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="dash-header">
+                <h2>👥 المستخدمين</h2>
+                <p class="dash-subtitle">جميع مستخدمي المنصة — {{ users.paginator.count }} مستخدم</p>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>المستخدم</th>
+                            <th>الاسم</th>
+                            <th>الإيميل</th>
+                            <th>الجوال</th>
+                            <th>الدور</th>
+                            <th>الحالة</th>
+                            <th>تحذيرات</th>
+                            <th>الإعلانات</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'dashboard_user_detail' u.id %}" class="user-cell-link">
+                                <div class="user-cell">
+                                    <div class="user-avatar-sm">
+                                        {% if u.profile.photo %}
+                                        <img src="{{ u.profile.photo.url }}">
+                                        {% else %}
+                                        <span class="avatar-letter">{{ u.first_name|first|default:u.username|first }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <span>{{ u.username }}</span>
+                                </div>
+                                </a>
+                            </td>
+                            <td>{{ u.first_name|default:"-" }}</td>
+                            <td class="td-email">{{ u.email }}</td>
+                            <td>{{ u.profile.phone|default:"-" }}</td>
+                            <td><span class="role-badge role-{{ u.profile.role }}">{{ u.profile.get_role_display }}</span></td>
+                            <td>
+                                {% if u.profile.is_banned %}
+                                <span class="status-badge status-archived">موقوف</span>
+                                {% else %}
+                                <span class="status-badge status-active">نشط</span>
+                                {% endif %}
+                            </td>
+                            <td class="td-views">
+                                {% if u.profile.warnings > 0 %}
+                                <span class="warn-count">{{ u.profile.warnings }}</span>
+                                {% else %}
+                                0
+                                {% endif %}
+                            </td>
+                            <td class="td-views">{{ u.ad_count }}</td>
+                            <td>
+                                <div class="action-cell" style="flex-wrap:nowrap">
+                                    <a href="{% url 'dashboard_user_detail' u.id %}" class="dash-action-icon view" title="عرض التفاصيل">👁</a>
+                                    {% if u.profile.is_banned %}
+                                    <a href="{% url 'dashboard_user_action' u.id 'unban' %}" class="dash-action-icon unban" title="إلغاء الإيقاف">🔓</a>
+                                    {% else %}
+                                    <a href="{% url 'dashboard_user_action' u.id 'ban' %}" class="dash-action-icon ban" title="إيقاف المستخدم">🔒</a>
+                                    {% endif %}
+                                    <a href="{% url 'dashboard_user_action' u.id 'warn' %}" class="dash-action-icon warn" title="إرسال تحذير">⚠️</a>
+                                    <a href="{% url 'dashboard_user_action' u.id 'delete' %}" class="dash-action-icon delete" title="حذف المستخدم" onclick="return confirm('هل أنت متأكد من حذف المستخدم {{ u.username }}؟')">🗑</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if users.paginator.num_pages > 1 %}
+            <div class="pagination" style="margin-top:1rem">
+                {% if users.has_previous %}
+                <a href="?page={{ users.previous_page_number }}" class="page-link">‹ السابق</a>
+                {% endif %}
+                {% for n in users.paginator.page_range %}
+                <a href="?page={{ n }}" class="page-link {% if n == users.number %}active{% endif %}">{{ n }}</a>
+                {% endfor %}
+                {% if users.has_next %}
+                <a href="?page={{ users.next_page_number }}" class="page-link">التالي ›</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+</body>
+</html>

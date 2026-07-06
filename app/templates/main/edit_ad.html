@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تعديل الإعلان - أطلب</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-
+{% extends 'main/base.html' %}
+{% block title %}تعديل الإعلان - أطلب{% endblock %}
+{% block navbar %}
     <nav class="navbar">
         <div class="nav-right">
             <a href="{% url 'home' %}" class="logo">أطلب</a>
@@ -18,7 +10,8 @@
             <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
         </div>
     </nav>
-
+{% endblock %}
+{% block content %}
     <div class="create-ad-page">
         <div class="create-ad-card">
             <div class="create-ad-header">
@@ -26,87 +19,155 @@
                 <p>قم بتحديث بيانات الإعلان ثم أعد نشره</p>
             </div>
 
+            {% if messages %}
+            <div class="messages-bar">
+                {% for msg in messages %}
+                <div class="msg {{ msg.tags }}">{{ msg }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <div class="form-section">
-                    <h3>نص الإعلان</h3>
-                    <div class="field-group">
-                        <label class="field-label">عنوان الإعلان</label>
-                        <input type="text" name="title" class="form-input" value="{{ ad.title }}" placeholder="عنوان الإعلان">
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">نص الإعلان بالعربية</label>
-                        <textarea name="text_ar" class="form-textarea" rows="4" placeholder="اكتب نص الإعلان بالعربية">{{ ad.text_ar }}</textarea>
-                    </div>
-                    <div class="field-group">
-                        <label class="field-label">بالإنجليزية</label>
-                        <textarea name="text_en" class="form-textarea" rows="4" placeholder="Write the ad text in English">{{ ad.text_en }}</textarea>
-                    </div>
+                <div class="form-group">
+                    <label>عنوان الإعلان</label>
+                    <input type="text" name="title" value="{{ ad.title }}" required class="form-input">
                 </div>
 
-                <div class="form-section">
-                    <h3>الصور</h3>
-                    <p class="field-note">الصورة الأولى هي غلاف الإعلان</p>
-                    <div class="upload-grid" id="uploadGrid">
-                        <label class="upload-box {% if ad.image_0 %}has-image{% endif %}" data-index="0">
+                <div class="form-group">
+                    <label>الغرض من الإعلان</label>
+                    <select name="purpose" required class="form-input" id="purpose-select">
+                        <option value="">-- اختر الغرض --</option>
+                        {% for p in purposes_list %}
+                        <option value="{{ p }}" {% if ad.purpose == p %}selected{% endif %}>{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" id="section-group" style="display:none;">
+                    <label>القسم</label>
+                    <select name="section" class="form-input" id="section-select">
+                        <option value="">-- اختر القسم --</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="specialty-group" style="display:none;">
+                    <label>التخصص</label>
+                    <select name="specialty" class="form-input" id="specialty-select">
+                        <option value="">-- اختر التخصص --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>تفاصيل الإعلان (بالعربية)</label>
+                    <textarea name="text_ar" required class="form-input" rows="5">{{ ad.text_ar }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>تفاصيل الإعلان (بالإنجليزية)</label>
+                    <textarea name="text_en" required class="form-input" rows="5">{{ ad.text_en }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>الصور الحالية (اختياري)</label>
+                    <div class="image-upload-grid">
+                        <label class="image-upload-box" data-index="0">
                             <input type="file" name="image_0" accept="image/*" hidden>
-                            {% if ad.image_0 %}<img src="{{ ad.image_0.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                            <div class="upload-placeholder">{% if ad.image_0 %}<img src="{{ ad.image_0.url }}">{% else %}📷{% endif %}</div>
                         </label>
-                        <label class="upload-box {% if ad.image_1 %}has-image{% endif %}" data-index="1">
+                        <label class="image-upload-box" data-index="1">
                             <input type="file" name="image_1" accept="image/*" hidden>
-                            {% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                            <div class="upload-placeholder">{% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% else %}📷{% endif %}</div>
                         </label>
-                        <label class="upload-box {% if ad.image_2 %}has-image{% endif %}" data-index="2">
+                        <label class="image-upload-box" data-index="2">
                             <input type="file" name="image_2" accept="image/*" hidden>
-                            {% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                            <div class="upload-placeholder">{% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% else %}📷{% endif %}</div>
                         </label>
-                        <label class="upload-box {% if ad.image_3 %}has-image{% endif %}" data-index="3">
+                        <label class="image-upload-box" data-index="3">
                             <input type="file" name="image_3" accept="image/*" hidden>
-                            {% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% else %}<span class="upload-placeholder">+</span>{% endif %}
+                            <div class="upload-placeholder">{% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% else %}📷{% endif %}</div>
                         </label>
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3>معلومات الاتصال</h3>
-                    <div class="contact-row">
-                        <div class="field-group flex-1">
-                            <label class="field-label">رقم الهاتف</label>
-                            <input type="text" name="contact_phone" class="form-input" value="{{ ad.contact_phone }}" placeholder="05xxxxxxxx">
-                        </div>
-                        <div class="field-group flex-1">
-                            <label class="field-label">البريد الإلكتروني</label>
-                            <input type="email" name="contact_email" class="form-input" value="{{ ad.contact_email }}" placeholder="example@email.com">
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>رقم الجوال</label>
+                        <input type="text" name="contact_phone" class="form-input" value="{{ ad.contact_phone }}">
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" name="contact_email" class="form-input" value="{{ ad.contact_email }}">
                     </div>
                 </div>
 
-                <div class="field-group">
-                    <label class="field-label">الغرض</label>
-                    <input type="text" class="form-input" value="{{ ad.purpose }}" readonly>
+                <div class="form-actions">
+                    <button type="submit" name="action" value="draft" class="btn-draft">💾 حفظ كمسودة</button>
+                    <button type="submit" name="action" value="publish" class="btn-publish">📢 إعادة النشر</button>
                 </div>
-                <div class="field-group">
-                    <label class="field-label">القسم</label>
-                    <input type="text" class="form-input" value="{{ ad.section }}" readonly>
-                </div>
-                <div class="field-group">
-                    <label class="field-label">التخصص</label>
-                    <input type="text" class="form-input" value="{{ ad.specialty }}" readonly>
-                </div>
-
-                <div class="form-actions three-btns">
-                    <button type="submit" name="action" value="draft" class="btn-outline">💾 حفظ كمسودة</button>
-                    <button type="submit" name="action" value="publish" class="btn-primary">📢 نشر الإعلان</button>
-                    <a href="{% url 'profile' %}" class="btn-outline danger">✕ رجوع</a>
-                </div>
-
             </form>
         </div>
     </div>
 
     <script>
-        document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {
+        const purposes = {{ purposes_json|safe }};
+        const currentSection = '{{ ad.section|default:"" }}';
+        const currentSpecialty = '{{ ad.specialty|default:"" }}';
+        const purposeSelect = document.getElementById('purpose-select');
+        const sectionGroup = document.getElementById('section-group');
+        const sectionSelect = document.getElementById('section-select');
+        const specialtyGroup = document.getElementById('specialty-group');
+        const specialtySelect = document.getElementById('specialty-select');
+
+        purposeSelect.addEventListener('change', function() {
+            const val = this.value;
+            sectionSelect.innerHTML = '<option value="">-- اختر القسم --</option>';
+            specialtySelect.innerHTML = '<option value="">-- اختر التخصص --</option>';
+            specialtyGroup.style.display = 'none';
+
+            if (val && purposes[val]) {
+                sectionGroup.style.display = 'block';
+                const sections = Object.keys(purposes[val]);
+                sections.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = s;
+                    if (s === currentSection) opt.selected = true;
+                    sectionSelect.appendChild(opt);
+                });
+                if (currentSection) {
+                    sectionSelect.dispatchEvent(new Event('change', {bubbles: true}));
+                }
+            } else {
+                sectionGroup.style.display = 'none';
+            }
+        });
+
+        sectionSelect.addEventListener('change', function() {
+            const purposeVal = purposeSelect.value;
+            const sectionVal = this.value;
+            specialtySelect.innerHTML = '<option value="">-- اختر التخصص --</option>';
+
+            if (purposeVal && sectionVal && purposes[purposeVal] && purposes[purposeVal][sectionVal]) {
+                specialtyGroup.style.display = 'block';
+                purposes[purposeVal][sectionVal].forEach(sp => {
+                    const opt = document.createElement('option');
+                    opt.value = sp;
+                    opt.textContent = sp;
+                    if (sp === currentSpecialty) opt.selected = true;
+                    specialtySelect.appendChild(opt);
+                });
+            } else {
+                specialtyGroup.style.display = 'none';
+            }
+        });
+
+        if (purposeSelect.value) {
+            purposeSelect.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+
+        document.querySelectorAll('.image-upload-box input[type="file"]').forEach(input => {
             input.addEventListener('change', function() {
                 const box = this.parentElement;
                 if (this.files && this.files[0]) {
@@ -126,6 +187,4 @@
             });
         });
     </script>
-
-</body>
-</html>
+{% endblock %}

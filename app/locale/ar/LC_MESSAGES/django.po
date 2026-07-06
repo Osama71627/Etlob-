@@ -1,0 +1,11 @@
+# Arabic translation for Etlob.
+# Copyright (C) 2026
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Etlob 1.0\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n>=3 && n<=10 ? 3 : n>=11 && n<=99 ? 4 : 5);\n"

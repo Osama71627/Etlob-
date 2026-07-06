@@ -6,3 +6,5 @@ venv/
 media/
 *.db
 .DS_Store
+
+.env

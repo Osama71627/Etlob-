@@ -1,140 +1,181 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ ad.text_ar|truncatechars:30 }} - أطلب</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends 'main/base.html' %}
+{% load static i18n %}
+{% block title %}{{ ad.title|default:ad.text_ar|truncatechars:30 }} - {% trans "أطلب" %}{% endblock %}
+{% block content %}
 
-    <nav class="navbar">
-        <div class="nav-right">
-            <a href="{% url 'home' %}" class="logo">أطلب</a>
-        </div>
-        <div class="nav-left">
-            {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
-                <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="nav-btn">تسجيل الدخول</a>
-            {% endif %}
-        </div>
-    </nav>
+<div class="detail-page-wrap">
 
-    <div class="main-layout">
-        <aside class="sidebar">
-            <div class="filter-toggles">
-                <button class="toggle-btn active">فرص عمل</button>
-                <button class="toggle-btn">يطلب عمل</button>
-            </div>
-            <h3 class="filter-title">البحث المتقدم</h3>
-            <div class="filter-group">
-                <label>بحث في</label>
-                <select class="filter-input">
-                    <option>كل الإعلانات</option>
-                    <option>الوظائف</option>
-                    <option>الخدمات</option>
-                    <option>طلب عمل</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>المستوى الوظيفي</label>
-                <select class="filter-input">
-                    <option>الكل</option>
-                    <option>مبتدئ</option>
-                    <option>متوسط</option>
-                    <option>خبير</option>
-                    <option>مدير</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>نوع الوظيفة</label>
-                <select class="filter-input">
-                    <option>الكل</option>
-                    <option>دوام كامل</option>
-                    <option>دوام جزئي</option>
-                    <option>عن بعد</option>
-                    <option>مؤقت</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>الراتب</label>
-                <div class="salary-row">
-                    <input type="text" class="filter-input" placeholder="من">
-                    <input type="text" class="filter-input" placeholder="إلى">
-                </div>
-            </div>
-            <div class="filter-group">
-                <label>المعلن</label>
-                <select class="filter-input">
-                    <option>الكل</option>
-                    <option>شركات</option>
-                    <option>أفراد</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label>بحث عن كلمات</label>
-                <input type="text" class="filter-input" placeholder="كلمة مفتاحية...">
-            </div>
-            <div class="filter-group">
-                <label>ترتيب حسب</label>
-                <select class="filter-input">
-                    <option>التاريخ (الأحدث)</option>
-                    <option>الصور ثم التاريخ</option>
-                    <option>كل اللغات</option>
-                    <option>العربية أولاً</option>
-                    <option>الإنجليزية أولاً</option>
-                </select>
-            </div>
-            <button class="filter-btn">🔍 تحديث حاصل البحث</button>
-        </aside>
-
-        <main class="content detail-content">
-            <div class="detail-gallery">
-                {% if ad.image_0 %}
-                <div class="detail-main-img">
-                    <img src="{{ ad.image_0.url }}" alt="إعلان">
-                </div>
-                {% endif %}
-                <div class="detail-thumbs">
-                    {% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% endif %}
-                    {% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% endif %}
-                    {% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% endif %}
-                </div>
-            </div>
-
-            <div class="detail-meta-bar">
-                <span class="detail-purpose">{{ ad.purpose }}</span>
-                <span class="detail-section">{{ ad.section }}</span>
-                <span class="detail-specialty">{{ ad.specialty }}</span>
-            </div>
-
-            <div class="detail-body">
-                <h2>{{ ad.title|default:ad.text_ar }}</h2>
-                {% if ad.text_ar and ad.title %}
-                    <p class="detail-desc">{{ ad.text_ar }}</p>
-                {% endif %}
-                {% if ad.text_en %}
-                    <p class="detail-en">{{ ad.text_en }}</p>
-                {% endif %}
-            </div>
-
-            <div class="detail-contact">
-                <h3>معلومات الاتصال</h3>
-                <div class="contact-info-row">
-                    <span>📞 {{ ad.contact_phone|default:"غير متوفر" }}</span>
-                    <span>✉️ {{ ad.contact_email|default:"غير متوفر" }}</span>
-                </div>
-            </div>
-
-            <div class="detail-footer">
-                <span class="detail-user">👤 {{ ad.user.first_name|default:ad.user.username }}</span>
-                <span class="detail-date">{{ ad.created_at|date:"Y-m-d" }}</span>
-            </div>
-        </main>
+    <!-- Breadcrumb -->
+    <div class="detail-breadcrumb">
+        <a href="javascript:history.back()" class="back-btn">← {% trans "رجوع" %}</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="{% url 'home' %}?purpose={{ ad.purpose }}">{{ ad.purpose }}</a>
+        {% if ad.section %}<span class="breadcrumb-sep">/</span><a href="{% url 'home' %}?section={{ ad.section }}">{{ ad.section }}</a>{% endif %}
     </div>
 
-</body>
-</html>
+    <div class="detail-layout">
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <div class="detail-main">
+
+            <!-- Gallery -->
+            <div class="detail-gallery">
+                {% with images=ad.image_0.url|default:'' %}
+                <div class="gallery-main">
+                    <img id="mainImage" src="{% if ad.image_0 %}{{ ad.image_0.url }}{% else %}{% static 'images/placeholder.svg' %}{% endif %}" alt="{{ ad.title }}">
+                    {% if ad.image_1 or ad.image_2 or ad.image_3 %}
+                    <button class="gallery-nav prev" onclick="galleryNav(-1)" aria-label="السابق">‹</button>
+                    <button class="gallery-nav next" onclick="galleryNav(1)" aria-label="التالي">›</button>
+                    {% endif %}
+                </div>
+                {% endwith %}
+                {% if ad.image_0 or ad.image_1 or ad.image_2 or ad.image_3 %}
+                <div class="gallery-thumbs" id="galleryThumbs">
+                    <div class="thumb-wrap active" data-index="0" onclick="galleryTo(0)">
+                        <img src="{% if ad.image_0 %}{{ ad.image_0.url }}{% endif %}" alt="">
+                    </div>
+                    {% if ad.image_1 %}<div class="thumb-wrap" data-index="1" onclick="galleryTo(1)"><img src="{{ ad.image_1.url }}" alt=""></div>{% endif %}
+                    {% if ad.image_2 %}<div class="thumb-wrap" data-index="2" onclick="galleryTo(2)"><img src="{{ ad.image_2.url }}" alt=""></div>{% endif %}
+                    {% if ad.image_3 %}<div class="thumb-wrap" data-index="3" onclick="galleryTo(3)"><img src="{{ ad.image_3.url }}" alt=""></div>{% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Badges + Title + Meta -->
+            <div class="detail-body">
+                <div class="detail-tags">
+                    <span class="tag tag-purpose">{{ ad.purpose }}</span>
+                    {% if ad.section %}<span class="tag tag-section">{{ ad.section }}</span>{% endif %}
+                    {% if ad.specialty %}<span class="tag tag-specialty">{{ ad.specialty }}</span>{% endif %}
+                    {% if ad.is_featured %}<span class="tag tag-featured">⭐ {% trans "مميز" %}</span>{% endif %}
+                </div>
+
+                <h1 class="detail-title">{{ ad.title|default:ad.text_ar }}</h1>
+
+                <div class="detail-meta-row">
+                    <span class="meta-item">📅 {{ ad.created_at|date:"Y-m-d" }}</span>
+                    {% if user == ad.user %}<span class="meta-item">👁️ {{ ad.views }} {% trans "مشاهدة" %}</span>{% endif %}
+                    <span class="meta-item">🆔 #{{ ad.id }}</span>
+                </div>
+
+                {% if ad.text_ar %}
+                <div class="detail-desc-ar">
+                    <h3>{% trans "الوصف" %}</h3>
+                    <p>{{ ad.text_ar|linebreaks }}</p>
+                </div>
+                {% endif %}
+
+                {% if ad.text_en %}
+                <div class="detail-desc-en">
+                    <h3>{% trans "Description" %}</h3>
+                    <p>{{ ad.text_en|linebreaks }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- ===== SIDEBAR ===== -->
+        <div class="detail-sidebar">
+
+            <!-- Seller Card -->
+            <div class="sidebar-card seller-card">
+                <div class="seller-avatar">
+                    {% if owner_profile and owner_profile.photo %}
+                    <img src="{{ owner_profile.photo.url }}" alt="{{ ad.user.first_name }}">
+                    {% else %}
+                    <div class="seller-avatar-letter">{{ ad.user.first_name|first|default:ad.user.username|first }}</div>
+                    {% endif %}
+                </div>
+                <div class="seller-info">
+                    <h4>{{ ad.user.first_name|default:ad.user.username }}</h4>
+                    <span class="seller-meta">{{ owner_ads_count }} {% trans "إعلان" %}</span>
+                </div>
+                <a href="{% url 'user_ads' ad.user.username %}" class="seller-link">{% trans "عرض الإعلانات" %} ←</a>
+            </div>
+
+            <!-- Contact Card -->
+            <div class="sidebar-card contact-card">
+                <h3>📞 {% trans "معلومات الاتصال" %}</h3>
+                <a href="tel:{{ ad.contact_phone }}" class="contact-btn phone-btn" dir="ltr">
+                    <span class="contact-icon">📞</span>
+                    <span>{{ ad.contact_phone|default:_("غير متوفر") }}</span>
+                </a>
+                <a href="mailto:{{ ad.contact_email }}" class="contact-btn email-btn">
+                    <span class="contact-icon">✉️</span>
+                    <span>{{ ad.contact_email|default:_("غير متوفر") }}</span>
+                </a>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="sidebar-card actions-card">
+                {% if user.is_authenticated %}
+                <a href="{% url 'toggle_favorite' ad.id %}" class="action-btn {% if is_favorited %}action-active{% endif %}">
+                    {% if is_favorited %}❤️{% else %}🤍{% endif %}
+                    {% if is_favorited %}{% trans "إزالة من المفضلة" %}{% else %}{% trans "أضف إلى المفضلة" %}{% endif %}
+                </a>
+                {% endif %}
+                {% if ad.user == user %}
+                <a href="{% url 'edit_ad' ad.id %}" class="action-btn">✏️ {% trans "تعديل الإعلان" %}</a>
+                {% endif %}
+                <button class="action-btn" onclick="navigator.clipboard?.writeText(window.location.href);alert('{% trans "تم نسخ الرابط" %}')">
+                    🔗 {% trans "مشاركة" %}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== RELATED ADS ===== -->
+    {% if related_ads %}
+    <div class="detail-related">
+        <h2>{% trans "إعلانات مشابهة" %}</h2>
+        <div class="related-grid">
+            {% for rad in related_ads %}
+            <a href="{% url 'ad_detail' rad.id %}" class="related-card">
+                <div class="related-img">
+                    {% if rad.image_0 %}
+                    <img src="{{ rad.image_0.url }}" alt="">
+                    {% else %}
+                    <div class="related-placeholder">{{ rad.purpose|slice:":2" }}</div>
+                    {% endif %}
+                </div>
+                <div class="related-body">
+                    <h4>{{ rad.title|default:rad.text_ar|truncatechars:30 }}</h4>
+                    <span class="related-meta">{{ rad.created_at|timesince }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+var galleryImages = [
+    {% if ad.image_0 %}'{{ ad.image_0.url }}'{% else %}null{% endif %},
+    {% if ad.image_1 %}'{{ ad.image_1.url }}'{% else %}null{% endif %},
+    {% if ad.image_2 %}'{{ ad.image_2.url }}'{% else %}null{% endif %},
+    {% if ad.image_3 %}'{{ ad.image_3.url }}'{% else %}null{% endif %}
+].filter(Boolean);
+
+var currentIdx = 0;
+
+function galleryTo(idx) {
+    currentIdx = idx;
+    document.getElementById('mainImage').src = galleryImages[idx];
+    document.querySelectorAll('.thumb-wrap').forEach(function(t) {
+        t.classList.toggle('active', parseInt(t.dataset.index) === idx);
+    });
+}
+
+function galleryNav(dir) {
+    var next = currentIdx + dir;
+    if (next < 0) next = galleryImages.length - 1;
+    if (next >= galleryImages.length) next = 0;
+    galleryTo(next);
+}
+</script>
+
+{% endblock %}

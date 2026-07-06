@@ -1,65 +1,66 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أطلب - إعلانات السعودية</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends 'main/base.html' %}
+{% load i18n %}
+{% block title %}{% trans "أطلب" %} - {% trans "إعلانات السعودية" %}{% endblock %}
+{% block navbar %}
 
-    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-right">
-            <span class="logo">أطلب</span>
+            <span class="logo">{% trans "أطلب" %}</span>
         </div>
-        <div class="nav-left">
+        <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="{% trans 'القائمة' %}">☰</button>
+        <div class="nav-left" id="navMenu">
 
             <!-- البلد -->
             <div class="dropdown">
-                <button class="nav-btn dropdown-trigger" data-dropdown="country">🇸🇦 المملكة العربية السعودية</button>
+                <button class="nav-btn dropdown-trigger" data-dropdown="country">🇸🇦 {% trans "المملكة العربية السعودية" %}</button>
                 <div class="dropdown-menu" id="country-dropdown">
-                    <div class="dropdown-item" data-flag="🇸🇦">🇸🇦 المملكة العربية السعودية</div>
-                    <div class="dropdown-item" data-flag="🇦🇪">🇦🇪 الإمارات العربية المتحدة</div>
-                    <div class="dropdown-item" data-flag="🇶🇦">🇶🇦 قطر</div>
-                    <div class="dropdown-item" data-flag="🇰🇼">🇰🇼 الكويت</div>
-                    <div class="dropdown-item" data-flag="🇧🇭">🇧🇭 البحرين</div>
-                    <div class="dropdown-item" data-flag="🇴🇲">🇴🇲 عمان</div>
-                    <div class="dropdown-item" data-flag="🇪🇬">🇪🇬 مصر</div>
-                    <div class="dropdown-item" data-flag="🇯🇴">🇯🇴 الأردن</div>
-                    <div class="dropdown-item" data-flag="🇮🇶">🇮🇶 العراق</div>
-                    <div class="dropdown-item" data-flag="🇸🇾">🇸🇾 سوريا</div>
-                    <div class="dropdown-item" data-flag="🇱🇧">🇱🇧 لبنان</div>
-                    <div class="dropdown-item" data-flag="🇾🇪">🇾🇪 اليمن</div>
-                    <div class="dropdown-item" data-flag="🇵🇸">🇵🇸 فلسطين</div>
-                    <div class="dropdown-item" data-flag="🇩🇿">🇩🇿 الجزائر</div>
-                    <div class="dropdown-item" data-flag="🇲🇦">🇲🇦 المغرب</div>
-                    <div class="dropdown-item" data-flag="🇹🇳">🇹🇳 تونس</div>
-                    <div class="dropdown-item" data-flag="🇱🇾">🇱🇾 ليبيا</div>
-                    <div class="dropdown-item" data-flag="🇸🇩">🇸🇩 السودان</div>
+                    <div class="dropdown-item" data-flag="🇸🇦">🇸🇦 {% trans "المملكة العربية السعودية" %}</div>
+                    <div class="dropdown-item" data-flag="🇦🇪">🇦🇪 {% trans "الإمارات العربية المتحدة" %}</div>
+                    <div class="dropdown-item" data-flag="🇶🇦">🇶🇦 {% trans "قطر" %}</div>
+                    <div class="dropdown-item" data-flag="🇰🇼">🇰🇼 {% trans "الكويت" %}</div>
+                    <div class="dropdown-item" data-flag="🇧🇭">🇧🇭 {% trans "البحرين" %}</div>
+                    <div class="dropdown-item" data-flag="🇴🇲">🇴🇲 {% trans "عمان" %}</div>
+                    <div class="dropdown-item" data-flag="🇪🇬">🇪🇬 {% trans "مصر" %}</div>
+                    <div class="dropdown-item" data-flag="🇯🇴">🇯🇴 {% trans "الأردن" %}</div>
+                    <div class="dropdown-item" data-flag="🇮🇶">🇮🇶 {% trans "العراق" %}</div>
+                    <div class="dropdown-item" data-flag="🇸🇾">🇸🇾 {% trans "سوريا" %}</div>
+                    <div class="dropdown-item" data-flag="🇱🇧">🇱🇧 {% trans "لبنان" %}</div>
+                    <div class="dropdown-item" data-flag="🇾🇪">🇾🇪 {% trans "اليمن" %}</div>
+                    <div class="dropdown-item" data-flag="🇵🇸">🇵🇸 {% trans "فلسطين" %}</div>
+                    <div class="dropdown-item" data-flag="🇩🇿">🇩🇿 {% trans "الجزائر" %}</div>
+                    <div class="dropdown-item" data-flag="🇲🇦">🇲🇦 {% trans "المغرب" %}</div>
+                    <div class="dropdown-item" data-flag="🇹🇳">🇹🇳 {% trans "تونس" %}</div>
+                    <div class="dropdown-item" data-flag="🇱🇾">🇱🇾 {% trans "ليبيا" %}</div>
+                    <div class="dropdown-item" data-flag="🇸🇩">🇸🇩 {% trans "السودان" %}</div>
                 </div>
             </div>
 
             <!-- تسجيل الدخول / حسابي -->
-            {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
+                <a href="{% url 'notifications' %}" class="nav-bell">
+                    🔔{% if unread_notifs > 0 %}<span class="nav-bell-count">{{ unread_notifs }}</span>{% endif %}
+                </a>
+                <a href="{% url 'subscription_shop' %}" class="nav-btn">⭐ {{ user.subscription.stars }}</a>
                 <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
-                <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+                {% if user.profile.role == 'admin' or user.profile.role == 'moderator' or user.is_superuser %}
+                <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ {% trans "الإدارة" %}</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="nav-btn">{% trans "تسجيل خروج" %}</a>
             {% else %}
-                <a href="{% url 'login' %}" class="nav-btn">تسجيل الدخول</a>
+                <a href="{% url 'login' %}" class="nav-btn">{% trans "تسجيل الدخول" %}</a>
             {% endif %}
 
             <!-- اللغة -->
-            <div class="dropdown">
-                <button class="nav-btn dropdown-trigger" data-dropdown="lang">🌐 اللغة</button>
-                <div class="dropdown-menu" id="lang-dropdown">
-                    <div class="dropdown-item" data-lang="ar">🇸🇦 العربية</div>
-                    <div class="dropdown-item" data-lang="en">🇬🇧 English</div>
-                    <div class="dropdown-item" data-lang="fr">🇫🇷 Français</div>
-                    <div class="dropdown-item" data-lang="tr">🇹🇷 Türkçe</div>
-                    <div class="dropdown-item" data-lang="ur">🇵🇰 اردو</div>
+            <form action="{% url 'set_language' %}" method="post" style="display:contents">
+                {% csrf_token %}
+                <div class="dropdown">
+                    <button type="button" class="nav-btn dropdown-trigger" data-dropdown="lang">🌐 {% trans "اللغة" %}</button>
+                    <div class="dropdown-menu" id="lang-dropdown">
+                        <button type="submit" name="language" value="ar" class="dropdown-item">🇸🇦 {% trans "العربية" %}</button>
+                        <button type="submit" name="language" value="en" class="dropdown-item">🇬🇧 {% trans "English" %}</button>
+                    </div>
                 </div>
-            </div>
+            </form>
 
         </div>
     </nav>
@@ -76,11 +77,11 @@
     <div class="hero-wrapper">
         <section class="hero">
             <div class="hero-right">
-                <h1 class="hero-logo">أطلب</h1>
-                <p class="hero-sub">إعلانات مبوبة السعودية</p>
+                <h1 class="hero-logo">{% trans "أطلب" %}</h1>
+                <p class="hero-sub">{% trans "إعلانات مبوبة السعودية" %}</p>
             </div>
             <div class="hero-left">
-                <a href="{% url 'create_ad' %}" class="hero-btn">+ أضف إعلانك مجاناً</a>
+                <a href="{% url 'create_ad' %}" class="hero-btn">{% trans "+ أضف إعلانك مجاناً" %}</a>
             </div>
         </section>
         <div class="hero-wave">
@@ -91,110 +92,114 @@
     </div>
 
     <!-- MAIN CONTENT -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">🔍 {% trans "فلتر" %}</button>
     <div class="main-layout">
         <aside class="sidebar">
 
             <form method="get" class="filter-form">
 
             <div class="filter-toggles">
-                <button type="button" class="toggle-btn {% if filter_data.search_in == 'فرص عمل' or not filter_data.search_in %}active{% endif %}" data-filter="search_in" data-value="فرص عمل">فرص عمل</button>
-                <button type="button" class="toggle-btn {% if filter_data.search_in == 'يطلب عمل' %}active{% endif %}" data-filter="search_in" data-value="يطلب عمل">يطلب عمل</button>
+                <button type="button" class="toggle-btn {% if filter_data.search_in == 'وظائف' %}active{% endif %}" data-filter="search_in" data-value="وظائف">{% trans "فرص عمل" %}</button>
+                <button type="button" class="toggle-btn {% if filter_data.search_in == 'خدمات' %}active{% endif %}" data-filter="search_in" data-value="خدمات">{% trans "يطلب عمل" %}</button>
             </div>
 
-            <h3 class="filter-title">البحث المتقدم</h3>
+            <h3 class="filter-title">{% trans "البحث المتقدم" %}</h3>
 
             <div class="filter-group">
-                <label>بحث في</label>
+                <label>{% trans "بحث في" %}</label>
                 <select name="search_in" class="filter-input">
-                    <option value="">كل الإعلانات</option>
-                    <option value="وظائف" {% if filter_data.search_in == 'وظائف' %}selected{% endif %}>الوظائف</option>
-                    <option value="خدمات" {% if filter_data.search_in == 'خدمات' %}selected{% endif %}>الخدمات</option>
-                    <option value="يطلب عمل" {% if filter_data.search_in == 'يطلب عمل' %}selected{% endif %}>طلب عمل</option>
+                    <option value="">{% trans "كل الإعلانات" %}</option>
+                    <option value="وظائف" {% if filter_data.search_in == 'وظائف' %}selected{% endif %}>{% trans "الوظائف" %}</option>
+                    <option value="خدمات" {% if filter_data.search_in == 'خدمات' %}selected{% endif %}>{% trans "الخدمات" %}</option>
+                    <option value="عقارات" {% if filter_data.search_in == 'عقارات' %}selected{% endif %}>{% trans "عقارات" %}</option>
+                    <option value="سيارات" {% if filter_data.search_in == 'سيارات' %}selected{% endif %}>{% trans "سيارات" %}</option>
+                    <option value="منوعات" {% if filter_data.search_in == 'منوعات' %}selected{% endif %}>{% trans "منوعات" %}</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>القسم</label>
+                <label>{% trans "القسم" %}</label>
                 <select name="section" class="filter-input">
-                    <option value="">كل الأقسام</option>
-                    <option value="عقارات" {% if filter_data.section == 'عقارات' %}selected{% endif %}>عقارات</option>
-                    <option value="سيارات" {% if filter_data.section == 'سيارات' %}selected{% endif %}>سيارات</option>
-                    <option value="وظائف" {% if filter_data.section == 'وظائف' %}selected{% endif %}>وظائف</option>
-                    <option value="خدمات" {% if filter_data.section == 'خدمات' %}selected{% endif %}>خدمات</option>
-                    <option value="منوعات" {% if filter_data.section == 'منوعات' %}selected{% endif %}>منوعات</option>
+                    <option value="">{% trans "كل الأقسام" %}</option>
+                    <option value="عقارات" {% if filter_data.section == 'عقارات' %}selected{% endif %}>{% trans "عقارات" %}</option>
+                    <option value="سيارات" {% if filter_data.section == 'سيارات' %}selected{% endif %}>{% trans "سيارات" %}</option>
+                    <option value="وظائف" {% if filter_data.section == 'وظائف' %}selected{% endif %}>{% trans "وظائف" %}</option>
+                    <option value="خدمات" {% if filter_data.section == 'خدمات' %}selected{% endif %}>{% trans "خدمات" %}</option>
+                    <option value="منوعات" {% if filter_data.section == 'منوعات' %}selected{% endif %}>{% trans "منوعات" %}</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>المجال</label>
+                <label>{% trans "المجال" %}</label>
                 <select name="specialty" class="filter-input">
-                    <option value="">كل المجالات</option>
-                    <option value="البرمجة" {% if filter_data.specialty == 'البرمجة' %}selected{% endif %}>البرمجة</option>
-                    <option value="التصميم" {% if filter_data.specialty == 'التصميم' %}selected{% endif %}>التصميم</option>
-                    <option value="الكمبيوتر" {% if filter_data.specialty == 'الكمبيوتر' %}selected{% endif %}>الكمبيوتر</option>
-                    <option value="الهندسة" {% if filter_data.specialty == 'الهندسة' %}selected{% endif %}>الهندسة</option>
-                    <option value="المحاسبة" {% if filter_data.specialty == 'المحاسبة' %}selected{% endif %}>المحاسبة</option>
+                    <option value="">{% trans "كل المجالات" %}</option>
+                    <option value="البرمجة" {% if filter_data.specialty == 'البرمجة' %}selected{% endif %}>{% trans "البرمجة" %}</option>
+                    <option value="التصميم" {% if filter_data.specialty == 'التصميم' %}selected{% endif %}>{% trans "التصميم" %}</option>
+                    <option value="الكمبيوتر" {% if filter_data.specialty == 'الكمبيوتر' %}selected{% endif %}>{% trans "الكمبيوتر" %}</option>
+                    <option value="الهندسة" {% if filter_data.specialty == 'الهندسة' %}selected{% endif %}>{% trans "الهندسة" %}</option>
+                    <option value="المحاسبة" {% if filter_data.specialty == 'المحاسبة' %}selected{% endif %}>{% trans "المحاسبة" %}</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>بحث عن كلمات</label>
-                <input type="text" name="q" class="filter-input" placeholder="كلمة مفتاحية..." value="{{ filter_data.q }}">
+                <label>{% trans "بحث عن كلمات" %}</label>
+                <input type="text" name="q" class="filter-input" placeholder="{% trans 'كلمة مفتاحية...' %}" value="{{ filter_data.q }}">
             </div>
 
             <div class="filter-group">
-                <label>ترتيب حسب</label>
+                <label>{% trans "ترتيب حسب" %}</label>
                 <select name="sort" class="filter-input">
-                    <option value="-created_at" {% if filter_data.sort == '-created_at' %}selected{% endif %}>التاريخ (الأحدث)</option>
-                    <option value="created_at" {% if filter_data.sort == 'created_at' %}selected{% endif %}>التاريخ (الأقدم)</option>
+                    <option value="-created_at" {% if filter_data.sort == '-created_at' %}selected{% endif %}>{% trans "التاريخ (الأحدث)" %}</option>
+                    <option value="created_at" {% if filter_data.sort == 'created_at' %}selected{% endif %}>{% trans "التاريخ (الأقدم)" %}</option>
                 </select>
             </div>
 
-            <button type="submit" class="filter-btn">🔍 تحديث حاصل البحث</button>
+            <button type="submit" class="filter-btn">🔍 {% trans "تحديث حاصل البحث" %}</button>
 
             </form>
 
             <div class="quick-links">
-                <h4>ربما ترغب بالاطلاع على</h4>
-                <a href="{% url 'home' %}?search_in=وظائف" class="quick-link">فرص عمل</a>
-                <a href="{% url 'home' %}?search_in=يطلب عمل" class="quick-link">يطلب عمل</a>
-                <a href="{% url 'home' %}?search_in=خدمات" class="quick-link">الخدمات</a>
+                <h4>{% trans "ربما ترغب بالاطلاع على" %}</h4>
+                <a href="{% url 'home' %}?search_in=وظائف" class="quick-link">{% trans "فرص عمل" %}</a>
+                <a href="{% url 'home' %}?search_in=خدمات" class="quick-link">{% trans "يطلب عمل" %}</a>
+                <a href="{% url 'home' %}?search_in=عقارات" class="quick-link">{% trans "عقارات" %}</a>
             </div>
 
             <div class="categories-section">
-                <h4>لائحة الأقسام</h4>
-                <a href="{% url 'home' %}" class="cat-link"><span class="cat-icon">📋</span> الكل</a>
-                <a href="{% url 'home' %}?q=حسابات" class="cat-link"><span class="cat-icon">📊</span> حسابات</a>
-                <a href="{% url 'home' %}?q=مبيعات" class="cat-link"><span class="cat-icon">📈</span> مبيعات وتسويق</a>
-                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🎨</span> تصميم</a>
-                <a href="{% url 'home' %}?specialty=البرمجة" class="cat-link"><span class="cat-icon">💻</span> برمجة</a>
-                <a href="{% url 'home' %}?specialty=الكمبيوتر" class="cat-link"><span class="cat-icon">🖥️</span> كمبيوترات</a>
-                <a href="{% url 'home' %}?section=خدمات" class="cat-link"><span class="cat-icon">✈️</span> سياحة ومطاعم</a>
-                <a href="{% url 'home' %}?q=طب" class="cat-link"><span class="cat-icon">🏥</span> طب وتمريض</a>
-                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🌐</span> تصميم مواقع</a>
+                <h4>{% trans "لائحة الأقسام" %}</h4>
+                <a href="{% url 'home' %}" class="cat-link"><span class="cat-icon">📋</span> {% trans "الكل" %}</a>
+                <a href="{% url 'home' %}?q=حسابات" class="cat-link"><span class="cat-icon">📊</span> {% trans "حسابات" %}</a>
+                <a href="{% url 'home' %}?q=مبيعات" class="cat-link"><span class="cat-icon">📈</span> {% trans "مبيعات وتسويق" %}</a>
+                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🎨</span> {% trans "تصميم" %}</a>
+                <a href="{% url 'home' %}?specialty=البرمجة" class="cat-link"><span class="cat-icon">💻</span> {% trans "برمجة" %}</a>
+                <a href="{% url 'home' %}?specialty=الكمبيوتر" class="cat-link"><span class="cat-icon">🖥️</span> {% trans "كمبيوترات" %}</a>
+                <a href="{% url 'home' %}?section=خدمات" class="cat-link"><span class="cat-icon">✈️</span> {% trans "سياحة ومطاعم" %}</a>
+                <a href="{% url 'home' %}?q=طب" class="cat-link"><span class="cat-icon">🏥</span> {% trans "طب وتمريض" %}</a>
+                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🌐</span> {% trans "تصميم مواقع" %}</a>
             </div>
         </aside>
 
         <main class="content">
             <div class="search-bar">
-                <input type="text" class="search-input" placeholder="ابحث في الإعلانات...">
-                <button class="search-btn">بحث</button>
+                <input type="text" class="search-input" id="mainSearchInput" placeholder="{% trans 'ابحث في الإعلانات...' %}" value="{{ filter_data.q }}">
+                <button class="search-btn" onclick="doSearch()">{% trans "بحث" %}</button>
             </div>
 
             <div class="sections-tabs">
-                <button class="tab active">الوظائف</button>
-                <button class="tab">الخدمات</button>
-                <button class="tab">طلب عمل</button>
+                <a href="{% url 'home' %}?search_in=وظائف" class="tab {% if filter_data.search_in == 'وظائف' %}active{% endif %}">{% trans "الوظائف" %}</a>
+                <a href="{% url 'home' %}?search_in=خدمات" class="tab {% if filter_data.search_in == 'خدمات' %}active{% endif %}">{% trans "الخدمات" %}</a>
+                <a href="{% url 'home' %}" class="tab {% if not filter_data.search_in %}active{% endif %}">{% trans "الكل" %}</a>
             </div>
 
-            <div class="results-count">{{ ads|length }} نتيجة</div>
+            <div class="results-count">{{ ads.paginator.count }} {% trans "نتيجة" %}</div>
 
             <div class="ads-grid">
                 {% for ad in ads %}
-                <a href="{% url 'ad_detail' ad.id %}" class="ad-card">
+                <a href="{% url 'ad_detail' ad.id %}" class="ad-card {% if ad.is_featured %}featured{% endif %}">
+                    {% if ad.is_featured %}<div class="featured-ribbon">{% trans "⭐ مميز" %}</div>{% endif %}
                     <div class="ad-img-wrap">
                         {% if ad.image_0 %}
-                            <img src="{{ ad.image_0.url }}" alt="إعلان">
+                            <img src="{{ ad.image_0.url }}" alt="{% trans 'إعلان' %}">
                         {% else %}
                             <div class="ad-placeholder">{{ ad.purpose|slice:":2" }}</div>
                         {% endif %}
@@ -207,9 +212,23 @@
                     </div>
                 </a>
                 {% empty %}
-                <div class="ad-empty">لا توجد إعلانات بعد</div>
+                <div class="ad-empty">{% trans "لا توجد إعلانات بعد" %}</div>
                 {% endfor %}
             </div>
+
+            {% if ads.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if ads.has_previous %}
+                <a href="?{% for key,val in filter_data.items %}{% if val %}{{ key }}={{ val }}&{% endif %}{% endfor %}page={{ ads.previous_page_number }}" class="page-link">‹ {% trans "السابق" %}</a>
+                {% endif %}
+                {% for n in ads.paginator.page_range %}
+                <a href="?{% for key,val in filter_data.items %}{% if val %}{{ key }}={{ val }}&{% endif %}{% endfor %}page={{ n }}" class="page-link {% if n == ads.number %}active{% endif %}">{{ n }}</a>
+                {% endfor %}
+                {% if ads.has_next %}
+                <a href="?{% for key,val in filter_data.items %}{% if val %}{{ key }}={{ val }}&{% endif %}{% endfor %}page={{ ads.next_page_number }}" class="page-link">{% trans "التالي" %} ›</a>
+                {% endif %}
+            </div>
+            {% endif %}
         </main>
     </div>
 
@@ -243,14 +262,41 @@
 
         document.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
                 const filterName = this.dataset.filter;
                 const filterValue = this.dataset.value;
-                document.querySelector(`select[name="${filterName}"]`).value = filterValue;
-                this.closest('form').submit();
+                const select = document.querySelector(`select[name="${filterName}"]`);
+                if (select.value === filterValue && this.classList.contains('active')) {
+                    select.value = '';
+                    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                } else {
+                    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    select.value = filterValue;
+                }
             });
         });
+
+        document.getElementById('mainSearchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        function doSearch() {
+            const q = document.getElementById('mainSearchInput').value;
+            const form = document.querySelector('.filter-form');
+            form.querySelector('input[name="q"]').value = q;
+            form.submit();
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        function toggleNavMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        window.addEventListener('scroll', function() {
+            document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
+        });
     </script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ u.username }} - لوحة التحكم</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-sidebar-header">
+                <span class="dash-logo">⚙️</span>
+                <h3>لوحة التحكم</h3>
+            </div>
+            <a href="{% url 'dashboard' %}" class="dash-link"><span class="dash-link-icon">📊</span> الإحصائيات</a>
+            <a href="{% url 'dashboard_users' %}" class="dash-link active"><span class="dash-link-icon">👥</span> المستخدمين</a>
+            <a href="{% url 'dashboard_ads' %}" class="dash-link"><span class="dash-link-icon">📋</span> الإعلانات</a>
+            <a href="{% url 'dashboard_subscriptions' %}" class="dash-link"><span class="dash-link-icon">💳</span> الاشتراكات</a>
+            <div class="dash-divider"></div>
+            <a href="{% url 'home' %}" class="dash-link"><span class="dash-link-icon">🏠</span> العودة للموقع</a>
+        </aside>
+
+        <main class="dash-content">
+            {% if messages %}
+            <div class="messages-bar">
+                {% for msg in messages %}
+                <div class="msg {{ msg.tags }}">{{ msg }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <a href="{% url 'dashboard_users' %}" class="back-link">← العودة للمستخدمين</a>
+
+            <div class="user-detail-card">
+                <div class="user-detail-avatar-wrap">
+                    {% if u.profile.photo %}
+                    <img src="{{ u.profile.photo.url }}" class="user-detail-avatar-img">
+                    {% else %}
+                    <div class="user-detail-avatar-letter">{{ u.first_name|first|default:u.username|first }}</div>
+                    {% endif %}
+                </div>
+                <div class="user-detail-info-wrap">
+                    <div class="user-detail-top">
+                        <div>
+                            <h2>{{ u.first_name|default:u.username }}</h2>
+                            <p class="user-detail-username">@{{ u.username }}</p>
+                        </div>
+                        <div class="user-detail-actions">
+                            {% if u.profile.is_banned %}
+                            <a href="{% url 'dashboard_user_action' u.id 'unban' %}" class="dash-action-btn unban-btn">🔓 إلغاء الإيقاف</a>
+                            {% else %}
+                            <a href="{% url 'dashboard_user_action' u.id 'ban' %}" class="dash-action-btn ban-btn">🔒 إيقاف المستخدم</a>
+                            {% endif %}
+                            <a href="{% url 'dashboard_user_action' u.id 'warn' %}" class="dash-action-btn warn-btn">⚠️ تحذير</a>
+                            <a href="{% url 'dashboard_user_action' u.id 'delete' %}" class="dash-action-btn delete-btn" onclick="return confirm('هل أنت متأكد من حذف {{ u.username }}؟')">🗑 حذف الحساب</a>
+                        </div>
+                    </div>
+                    <div class="user-detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">البريد الإلكتروني</span>
+                            <span class="detail-value">{{ u.email }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">رقم الجوال</span>
+                            <span class="detail-value">{{ u.profile.phone|default:"لا يوجد" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">الدور</span>
+                            <span class="detail-value"><span class="role-badge role-{{ u.profile.role }}">{{ u.profile.get_role_display }}</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">الحالة</span>
+                            <span class="detail-value">
+                                {% if u.profile.is_banned %}
+                                <span class="status-badge status-archived">موقوف</span>
+                                {% else %}
+                                <span class="status-badge status-active">نشط</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">التحذيرات</span>
+                            <span class="detail-value">
+                                {% if u.profile.warnings > 0 %}
+                                <span class="warn-badge">{{ u.profile.warnings }} تحذير</span>
+                                {% else %}
+                                لا يوجد
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">تاريخ التسجيل</span>
+                            <span class="detail-value">{{ u.date_joined|date:"Y-m-d" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">آخر دخول</span>
+                            <span class="detail-value">{{ u.last_login|date:"Y-m-d"|default:"-" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">الخطة</span>
+                            <span class="detail-value"><span class="plan-badge plan-{{ u.subscription.plan }}">{{ u.subscription.get_plan_display }}</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">أقصى إعلانات</span>
+                            <span class="detail-value">{{ u.subscription.max_ads }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">إعلانات مميزة متبقية</span>
+                            <span class="detail-value">{{ u.subscription.featured_ads }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dash-section-header">
+                <h3>📋 إعلانات المستخدم ({{ user_ads.count }})</h3>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>القسم</th>
+                            <th>الحالة</th>
+                            <th>المشاهدات</th>
+                            <th>التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad in user_ads %}
+                        <tr>
+                            <td class="td-title"><a href="{% url 'ad_detail' ad.id %}">{{ ad.title|default:ad.text_ar|truncatechars:30 }}</a></td>
+                            <td><span class="tag-purpose">{{ ad.purpose }}</span></td>
+                            <td>{{ ad.section }}</td>
+                            <td><span class="status-badge status-{{ ad.status }}">{{ ad.status }}</span></td>
+                            <td class="td-views">{{ ad.views }}</td>
+                            <td class="td-date">{{ ad.created_at|date:"Y-m-d" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="td-empty">لا توجد إعلانات</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

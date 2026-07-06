@@ -1,0 +1,92 @@
+{% extends 'main/base.html' %}
+{% block title %}تمييز الإعلان - أطلب{% endblock %}
+{% block navbar %}
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'subscription_shop' %}" class="nav-btn">⭐ {{ stars }}</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+<div class="promote-page">
+    <div class="promote-card" style="max-width:600px;margin:2rem auto;padding:2rem">
+        <h2 style="margin-bottom:1rem;font-size:1.4rem">⭐ تمييز الإعلان</h2>
+        <p style="margin-bottom:1.5rem;color:#666">
+            الإعلان: <strong>{{ ad.title }}</strong><br>
+            رصيد النجوم الحالي: <strong>{{ stars }} ⭐</strong>
+        </p>
+
+        {% if messages %}
+        <div class="messages-bar" style="margin-bottom:1rem">
+            {% for msg in messages %}
+            <div class="msg {{ msg.tags }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="promote-plans">
+                <label class="plan-card">
+                    <input type="radio" name="plan" value="1" hidden>
+                    <div class="plan-info">
+                        <span class="plan-stars">⭐ 1</span>
+                        <span class="plan-days">يوم واحد</span>
+                        <span class="plan-price">مجاناً</span>
+                    </div>
+                </label>
+                <label class="plan-card">
+                    <input type="radio" name="plan" value="2" hidden>
+                    <div class="plan-info">
+                        <span class="plan-stars">⭐⭐ 2</span>
+                        <span class="plan-days">3 أيام</span>
+                        <span class="plan-price">2 ⭐</span>
+                    </div>
+                </label>
+                <label class="plan-card">
+                    <input type="radio" name="plan" value="3" hidden>
+                    <div class="plan-info">
+                        <span class="plan-stars">⭐⭐⭐ 3</span>
+                        <span class="plan-days">7 أيام</span>
+                        <span class="plan-price">3 ⭐</span>
+                    </div>
+                </label>
+                <label class="plan-card">
+                    <input type="radio" name="plan" value="5" hidden>
+                    <div class="plan-info">
+                        <span class="plan-stars">⭐⭐⭐⭐⭐ 5</span>
+                        <span class="plan-days">15 يوم</span>
+                        <span class="plan-price">5 ⭐</span>
+                    </div>
+                </label>
+                <label class="plan-card">
+                    <input type="radio" name="plan" value="8" hidden>
+                    <div class="plan-info">
+                        <span class="plan-stars">⭐⭐⭐⭐⭐⭐⭐⭐ 8</span>
+                        <span class="plan-days">30 يوم</span>
+                        <span class="plan-price">8 ⭐</span>
+                    </div>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-publish" style="width:100%;margin-top:1rem">✅ تمييز الإعلان</button>
+            <a href="{{ ad.get_absolute_url }}" class="promote-cancel" style="display:block;text-align:center;margin-top:0.5rem">إلغاء</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.plan-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - أطلب</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'notifications' %}" class="nav-bell">
+                🔔{% if unread_notifs > 0 %}<span class="nav-bell-count">{{ unread_notifs }}</span>{% endif %}
+            </a>
+            {% if user.profile.role == 'admin' or user.profile.role == 'moderator' or user.is_superuser %}
+            <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-sidebar-header">
+                <span class="dash-logo">⚙️</span>
+                <h3>لوحة التحكم</h3>
+            </div>
+            <a href="{% url 'dashboard' %}" class="dash-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <span class="dash-link-icon">📊</span> الإحصائيات
+            </a>
+            <a href="{% url 'dashboard_users' %}" class="dash-link {% if request.resolver_match.url_name == 'dashboard_users' %}active{% endif %}">
+                <span class="dash-link-icon">👥</span> المستخدمين
+            </a>
+            <a href="{% url 'dashboard_ads' %}" class="dash-link {% if request.resolver_match.url_name == 'dashboard_ads' %}active{% endif %}">
+                <span class="dash-link-icon">📋</span> الإعلانات
+            </a>
+            <a href="{% url 'dashboard_subscriptions' %}" class="dash-link {% if request.resolver_match.url_name == 'dashboard_subscriptions' %}active{% endif %}">
+                <span class="dash-link-icon">💳</span> الاشتراكات
+            </a>
+            <div class="dash-divider"></div>
+            <a href="{% url 'home' %}" class="dash-link">
+                <span class="dash-link-icon">🏠</span> العودة للموقع
+            </a>
+        </aside>
+
+        <main class="dash-content">
+            <div class="dash-header">
+                <h2>📊 الإحصائيات</h2>
+                <p class="dash-subtitle">نظرة عامة على الموقع</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-users">👥</div>
+                    <span class="stat-num">{{ total_users }}</span>
+                    <span class="stat-label">إجمالي المستخدمين</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-ads">📋</div>
+                    <span class="stat-num">{{ total_ads }}</span>
+                    <span class="stat-label">إجمالي الإعلانات</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-active">✅</div>
+                    <span class="stat-num">{{ active_ads }}</span>
+                    <span class="stat-label">منشورة</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-pending">⏳</div>
+                    <span class="stat-num">{{ pending_ads }}</span>
+                    <span class="stat-label">قيد المراجعة</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-views">👁</div>
+                    <span class="stat-num">{{ total_views }}</span>
+                    <span class="stat-label">إجمالي المشاهدات</span>
+                </div>
+            </div>
+
+            <div class="dash-section-header">
+                <h3>آخر الإعلانات</h3>
+                <a href="{% url 'dashboard_ads' %}" class="dash-view-all">عرض الكل →</a>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>المستخدم</th>
+                            <th>الحالة</th>
+                            <th>المشاهدات</th>
+                            <th>التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad in recent_ads %}
+                        <tr>
+                            <td class="td-title">{{ ad.title|default:ad.text_ar|truncatechars:25 }}</td>
+                            <td><span class="tag-purpose">{{ ad.purpose }}</span></td>
+                            <td>{{ ad.user.username }}</td>
+                            <td><span class="status-badge status-{{ ad.status }}">{{ ad.status }}</span></td>
+                            <td class="td-views">{{ ad.views }}</td>
+                            <td class="td-date">{{ ad.created_at|date:"Y-m-d" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="td-empty">لا توجد إعلانات</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

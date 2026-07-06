@@ -1,24 +1,24 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حسابي - أطلب</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-
-    <!-- NAVBAR -->
+{% extends 'main/base.html' %}
+{% block title %}ملفي - أطلب{% endblock %}
+{% block navbar %}
     <nav class="navbar">
         <div class="nav-right">
             <a href="{% url 'home' %}" class="logo">أطلب</a>
         </div>
         <div class="nav-left">
             <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            {% if user.profile.role == 'admin' or user.profile.role == 'moderator' or user.is_superuser %}
+            <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
+            {% endif %}
+            <a href="{% url 'notifications' %}" class="nav-bell">
+                🔔{% if unread_notifs > 0 %}<span class="nav-bell-count">{{ unread_notifs }}</span>{% endif %}
+            </a>
+            <a href="{% url 'subscription_shop' %}" class="nav-btn">⭐ {{ user.subscription.stars }}</a>
             <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
         </div>
     </nav>
+{% endblock %}
+{% block content %}
 
     <div class="profile-layout">
         <!-- Sidebar -->
@@ -35,8 +35,9 @@
 
             <div class="profile-tabs">
                 <button class="profile-tab active" data-tab="ads">📋 إعلاناتي</button>
-                <button class="profile-tab" data-tab="balance">💰 رصيد حسابي</button>
+                <button class="profile-tab" data-tab="balance">⭐ اشتراكي</button>
                 <button class="profile-tab" data-tab="favorites">⭐ المفضلة</button>
+                <button class="profile-tab" data-tab="notifications">🔔 الإشعارات {% if unread_notifs > 0 %}<span class="notif-tab-count">{{ unread_notifs }}</span>{% endif %}</button>
                 <a href="{% url 'logout' %}" class="profile-tab logout-tab">🚪 تسجيل الخروج</a>
             </div>
         </aside>
@@ -57,29 +58,7 @@
                     {% if ads_active %}
                     <div class="my-ads-list">
                         {% for ad in ads_active %}
-                        <div class="my-ad-item">
-                            <div class="my-ad-img">
-                                {% if ad.image_0 %}
-                                    <img src="{{ ad.image_0.url }}">
-                                {% else %}
-                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
-                                {% endif %}
-                            </div>
-                            <div class="my-ad-info">
-                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
-                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
-                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
-                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
-                            </div>
-                            <div class="my-ad-stats">
-                                <span class="ad-view-count">👁 {{ ad.views }}</span>
-                            </div>
-                            <div class="my-ad-actions">
-                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
-                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
-                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
-                            </div>
-                        </div>
+                        {% include 'main/_ad_item.html' %}
                         {% endfor %}
                     </div>
                     {% else %}
@@ -93,29 +72,7 @@
                     {% if ads_pending %}
                     <div class="my-ads-list">
                         {% for ad in ads_pending %}
-                        <div class="my-ad-item">
-                            <div class="my-ad-img">
-                                {% if ad.image_0 %}
-                                    <img src="{{ ad.image_0.url }}">
-                                {% else %}
-                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
-                                {% endif %}
-                            </div>
-                            <div class="my-ad-info">
-                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
-                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
-                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
-                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
-                            </div>
-                            <div class="my-ad-stats">
-                                <span class="ad-view-count">👁 {{ ad.views }}</span>
-                            </div>
-                            <div class="my-ad-actions">
-                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
-                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
-                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
-                            </div>
-                        </div>
+                        {% include 'main/_ad_item.html' %}
                         {% endfor %}
                     </div>
                     {% else %}
@@ -129,29 +86,7 @@
                     {% if ads_draft %}
                     <div class="my-ads-list">
                         {% for ad in ads_draft %}
-                        <div class="my-ad-item">
-                            <div class="my-ad-img">
-                                {% if ad.image_0 %}
-                                    <img src="{{ ad.image_0.url }}">
-                                {% else %}
-                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
-                                {% endif %}
-                            </div>
-                            <div class="my-ad-info">
-                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
-                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
-                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
-                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
-                            </div>
-                            <div class="my-ad-stats">
-                                <span class="ad-view-count">👁 {{ ad.views }}</span>
-                            </div>
-                            <div class="my-ad-actions">
-                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
-                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
-                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
-                            </div>
-                        </div>
+                        {% include 'main/_ad_item.html' %}
                         {% endfor %}
                     </div>
                     {% else %}
@@ -165,29 +100,7 @@
                     {% if ads_archived %}
                     <div class="my-ads-list">
                         {% for ad in ads_archived %}
-                        <div class="my-ad-item">
-                            <div class="my-ad-img">
-                                {% if ad.image_0 %}
-                                    <img src="{{ ad.image_0.url }}">
-                                {% else %}
-                                    <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
-                                {% endif %}
-                            </div>
-                            <div class="my-ad-info">
-                                <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
-                                <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
-                                <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
-                                <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
-                            </div>
-                            <div class="my-ad-stats">
-                                <span class="ad-view-count">👁 {{ ad.views }}</span>
-                            </div>
-                            <div class="my-ad-actions">
-                                <button class="ad-action promote" title="تميز الإعلان">⭐ تميز</button>
-                                <button class="ad-action pause" title="إيقاف العرض">⏸ إيقاف</button>
-                                <button class="ad-action edit" onclick="window.location.href='{% url 'edit_ad' ad.id %}'" title="تعديل">✏️ تعديل</button>
-                            </div>
-                        </div>
+                        {% include 'main/_ad_item.html' %}
                         {% endfor %}
                     </div>
                     {% else %}
@@ -199,19 +112,79 @@
             </div>
 
             <div id="tab-balance" class="tab-content">
-                <h2>رصيد حسابي</h2>
-                <p class="tab-desc">رصيدك الحالي وتفاصيل الفواتير</p>
+                <h2>⭐ اشتراكي</h2>
+                <p class="tab-desc">نجومك وخطط التميز</p>
                 <div class="balance-card">
-                    <p class="balance-label">الرصيد الحالي</p>
-                    <p class="balance-amount">0 ريال</p>
+                    <p class="balance-label">رصيد النجوم</p>
+                    <p class="balance-amount">{{ user.subscription.stars }} ⭐</p>
+                    <a href="{% url 'subscription_shop' %}" class="subscribe-btn">💳 شراء نجوم</a>
+                </div>
+                <div class="balance-card" style="margin-top:1rem">
+                    <p class="balance-label">خطة الاشتراك</p>
+                    <p class="balance-plan">{{ user.subscription.get_plan_display }}</p>
+                    <p class="balance-detail">أقصى إعلانات: {{ user.subscription.max_ads }}</p>
+                    <p class="balance-detail">إعلانات مميزة: {{ user.subscription.featured_ads }}</p>
                 </div>
             </div>
 
             <div id="tab-favorites" class="tab-content">
-                <h2>المفضلة</h2>
-                <p class="tab-desc">الإعلانات التي حفظتها للمتابعة لاحقاً</p>
+                <h2>❤️ المفضلة</h2>
+                <p class="tab-desc">الإعلانات التي حفظتها للمتابعة لاحقاً — {{ fav_ads|length }}</p>
+                {% if fav_ads %}
+                <div class="my-ads-list">
+                    {% for ad in fav_ads %}
+                    <div class="my-ad-item">
+                        <div class="my-ad-img">
+                            {% if ad.image_0 %}
+                                <img src="{{ ad.image_0.url }}">
+                            {% else %}
+                                <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="my-ad-info">
+                            <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
+                            <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
+                            <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
+                        </div>
+                        <div class="my-ad-stats">
+                            <span class="ad-view-count">👁 {{ ad.views }}</span>
+                        </div>
+                        <div class="my-ad-actions">
+                            <a href="{% url 'toggle_favorite' ad.id %}" class="ad-action delete" title="إزالة من المفضلة">❤️ إزالة</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
                 <div class="profile-empty">
                     <p>لا توجد إعلانات في المفضلة</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="tab-notifications" class="tab-content">
+                <h2>🔔 الإشعارات</h2>
+                <p class="tab-desc">آخر التحذيرات والإشعارات</p>
+                <div class="notif-list">
+                    {% for n in user.notifications.all %}
+                    <a href="{% if n.url %}{{ n.url }}{% else %}#{% endif %}" class="notif-card-link">
+                    <div class="notif-card {% if not n.is_read %}unread{% endif %}">
+                        <div class="notif-icon notif-{{ n.type }}">
+                            {% if n.type == 'warning' %}⚠️{% elif n.type == 'danger' %}🔒{% elif n.type == 'success' %}✅{% else %}ℹ️{% endif %}
+                        </div>
+                        <div class="notif-body">
+                            <h4>{{ n.title }}</h4>
+                            {% if n.message %}<p>{{ n.message }}</p>{% endif %}
+                            <span class="notif-date">{{ n.created_at|timesince }}</span>
+                        </div>
+                        {% if not n.is_read %}
+                        <a href="{% url 'mark_read' n.id %}" class="notif-read-btn" onclick="event.stopPropagation()">✓</a>
+                        {% endif %}
+                    </div>
+                    </a>
+                    {% empty %}
+                    <div class="notif-empty">لا توجد إشعارات</div>
+                    {% endfor %}
                 </div>
             </div>
         </main>
@@ -238,6 +211,4 @@
             });
         });
     </script>
-
-</body>
-</html>
+{% endblock %}

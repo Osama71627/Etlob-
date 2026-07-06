@@ -1,0 +1,355 @@
+# English translation for Etlob.
+# Copyright (C) 2026
+# This file is distributed under the same license as the Django project.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Etlob 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "أطلب"
+msgstr "Etlob"
+
+msgid "إعلانات السعودية"
+msgstr "Saudi Classifieds"
+
+msgid "القائمة"
+msgstr "Menu"
+
+msgid "تسجيل خروج"
+msgstr "Logout"
+
+msgid "تسجيل الدخول"
+msgstr "Login"
+
+msgid "حساب جديد"
+msgstr "New Account"
+
+msgid "المملكة العربية السعودية"
+msgstr "Saudi Arabia"
+
+msgid "الإمارات العربية المتحدة"
+msgstr "United Arab Emirates"
+
+msgid "قطر"
+msgstr "Qatar"
+
+msgid "الكويت"
+msgstr "Kuwait"
+
+msgid "البحرين"
+msgstr "Bahrain"
+
+msgid "عمان"
+msgstr "Oman"
+
+msgid "مصر"
+msgstr "Egypt"
+
+msgid "الأردن"
+msgstr "Jordan"
+
+msgid "العراق"
+msgstr "Iraq"
+
+msgid "سوريا"
+msgstr "Syria"
+
+msgid "لبنان"
+msgstr "Lebanon"
+
+msgid "اليمن"
+msgstr "Yemen"
+
+msgid "فلسطين"
+msgstr "Palestine"
+
+msgid "الجزائر"
+msgstr "Algeria"
+
+msgid "المغرب"
+msgstr "Morocco"
+
+msgid "تونس"
+msgstr "Tunisia"
+
+msgid "ليبيا"
+msgstr "Libya"
+
+msgid "السودان"
+msgstr "Sudan"
+
+msgid "الإدارة"
+msgstr "Dashboard"
+
+msgid "اللغة"
+msgstr "Language"
+
+msgid "العربية"
+msgstr "العربية"
+
+msgid "English"
+msgstr "English"
+
+msgid "إعلانات مبوبة السعودية"
+msgstr "Saudi Classifieds"
+
+msgid "+ أضف إعلانك مجاناً"
+msgstr "+ Add Your Ad Free"
+
+msgid "فلتر"
+msgstr "Filter"
+
+msgid "فرص عمل"
+msgstr "Jobs"
+
+msgid "يطلب عمل"
+msgstr "Looking for Work"
+
+msgid "البحث المتقدم"
+msgstr "Advanced Search"
+
+msgid "بحث في"
+msgstr "Search In"
+
+msgid "كل الإعلانات"
+msgstr "All Ads"
+
+msgid "الوظائف"
+msgstr "Jobs"
+
+msgid "الخدمات"
+msgstr "Services"
+
+msgid "عقارات"
+msgstr "Real Estate"
+
+msgid "سيارات"
+msgstr "Cars"
+
+msgid "منوعات"
+msgstr "Miscellaneous"
+
+msgid "القسم"
+msgstr "Section"
+
+msgid "كل الأقسام"
+msgstr "All Sections"
+
+msgid "المجال"
+msgstr "Field"
+
+msgid "كل المجالات"
+msgstr "All Fields"
+
+msgid "البرمجة"
+msgstr "Programming"
+
+msgid "التصميم"
+msgstr "Design"
+
+msgid "الكمبيوتر"
+msgstr "Computer"
+
+msgid "الهندسة"
+msgstr "Engineering"
+
+msgid "المحاسبة"
+msgstr "Accounting"
+
+msgid "بحث عن كلمات"
+msgstr "Keyword Search"
+
+msgid "كلمة مفتاحية..."
+msgstr "Keyword..."
+
+msgid "ترتيب حسب"
+msgstr "Sort By"
+
+msgid "التاريخ (الأحدث)"
+msgstr "Date (Newest)"
+
+msgid "التاريخ (الأقدم)"
+msgstr "Date (Oldest)"
+
+msgid "تحديث حاصل البحث"
+msgstr "Update Search Results"
+
+msgid "ربما ترغب بالاطلاع على"
+msgstr "You may also like"
+
+msgid "لائحة الأقسام"
+msgstr "Categories"
+
+msgid "الكل"
+msgstr "All"
+
+msgid "حسابات"
+msgstr "Accounting"
+
+msgid "مبيعات وتسويق"
+msgstr "Sales & Marketing"
+
+msgid "برمجة"
+msgstr "Programming"
+
+msgid "كمبيوترات"
+msgstr "Computers"
+
+msgid "سياحة ومطاعم"
+msgstr "Tourism & Restaurants"
+
+msgid "طب وتمريض"
+msgstr "Medical & Nursing"
+
+msgid "تصميم مواقع"
+msgstr "Web Design"
+
+msgid "ابحث في الإعلانات..."
+msgstr "Search in ads..."
+
+msgid "بحث"
+msgstr "Search"
+
+msgid "نتيجة"
+msgstr "result(s)"
+
+msgid "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+msgstr "Email or password is incorrect"
+
+msgid "البريد الإلكتروني مستخدم مسبقاً"
+msgstr "Email is already registered"
+
+msgid "تم إنشاء الحساب بنجاح"
+msgstr "Account created successfully"
+
+msgid "مرحباً بعودتك! أدخل بياناتك للمتابعة"
+msgstr "Welcome back! Enter your details to continue"
+
+msgid "البريد الإلكتروني"
+msgstr "Email"
+
+msgid "كلمة السر"
+msgstr "Password"
+
+msgid "حفظ تسجيل دخولي"
+msgstr "Remember me"
+
+msgid "ليس لديك حساب؟"
+msgstr "Don't have an account?"
+
+msgid "إنشاء حساب جديد"
+msgstr "Create new account"
+
+msgid "أو"
+msgstr "Or"
+
+msgid "تسجيل الدخول بواسطة جوجل"
+msgstr "Sign in with Google"
+
+msgid "تسجيل الدخول بواسطة الفيس بوك"
+msgstr "Sign in with Facebook"
+
+msgid "إنشاء حساب"
+msgstr "Create Account"
+
+msgid "إنشاء حساب جديد"
+msgstr "Create New Account"
+
+msgid "أنشئ حسابك واستمتع بخدمات أطلب"
+msgstr "Create your account and enjoy Etlob services"
+
+msgid "الاسم الكامل"
+msgstr "Full Name"
+
+msgid "الاسم"
+msgstr "Name"
+
+msgid "رقم الجوال"
+msgstr "Phone Number"
+
+msgid "الصورة الشخصية"
+msgstr "Profile Photo"
+
+msgid "تأكيد كلمة السر"
+msgstr "Confirm Password"
+
+msgid "لديك حساب؟"
+msgstr "Have an account?"
+
+msgid "إنشاء حساب بواسطة جوجل"
+msgstr "Sign up with Google"
+
+msgid "إنشاء حساب بواسطة الفيس بوك"
+msgstr "Sign up with Facebook"
+
+msgid "رجوع"
+msgstr "Back"
+
+msgid "مميز"
+msgstr "Featured"
+
+msgid "مشاهدة"
+msgstr "Views"
+
+msgid "الوصف"
+msgstr "Description"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "إعلان"
+msgstr "Ad"
+
+msgid "عرض الإعلانات"
+msgstr "View Ads"
+
+msgid "معلومات الاتصال"
+msgstr "Contact Info"
+
+msgid "غير متوفر"
+msgstr "Not available"
+
+msgid "إزالة من المفضلة"
+msgstr "Remove from Favorites"
+
+msgid "أضف إلى المفضلة"
+msgstr "Add to Favorites"
+
+msgid "تعديل الإعلان"
+msgstr "Edit Ad"
+
+msgid "تم نسخ الرابط"
+msgstr "Link copied"
+
+msgid "مشاركة"
+msgstr "Share"
+
+msgid "إعلانات مشابهة"
+msgstr "Similar Ads"
+
+msgid "إعلانات"
+msgstr "Ads"
+
+msgid "عدد الإعلانات"
+msgstr "Number of Ads"
+
+msgid "⭐ مميز"
+msgstr "⭐ Featured"
+
+msgid "إعلان"
+msgstr "Ad"
+
+msgid "لا توجد إعلانات بعد"
+msgstr "No ads yet"
+
+msgid "السابق"
+msgstr "Previous"
+
+msgid "التالي"
+msgstr "Next"

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}أطلب{% endblock %}</title>
+    {% load static i18n %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+    {% block navbar %}
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">{% trans "أطلب" %}</a>
+        </div>
+        <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="{% trans 'القائمة' %}">☰</button>
+        <div class="nav-left" id="navMenu">
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'logout' %}" class="nav-btn">{% trans "تسجيل خروج" %}</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="nav-btn">{% trans "تسجيل الدخول" %}</a>
+            <a href="{% url 'signup' %}" class="nav-btn">{% trans "حساب جديد" %}</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% if messages %}
+    <div class="messages-bar">
+        {% for msg in messages %}
+        <div class="msg {{ msg.tags }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <script>
+        window.addEventListener('scroll', function() {
+            document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
+        });
+        function toggleNavMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+    </script>
+
+</body>
+</html>

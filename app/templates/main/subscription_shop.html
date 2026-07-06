@@ -1,0 +1,101 @@
+{% extends 'main/base.html' %}
+{% block title %}اشتراك - أطلب{% endblock %}
+{% block navbar %}
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'subscription_shop' %}" class="nav-btn">⭐ {{ stars }}</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+<div class="sub-page">
+    <div class="sub-card">
+        <div class="sub-header">
+            <span class="sub-icon">⭐</span>
+            <h1>متجر النجوم</h1>
+            <p>اشترِ نجومًا واجعل إعلانك مميزًا ليظهر في المقدمة</p>
+        </div>
+
+        <div class="sub-balance-card">
+            <span class="sub-balance-label">رصيدك الحالي</span>
+            <span class="sub-balance-value">{{ stars }} ⭐</span>
+            <span class="sub-balance-hint">كل نجمة = يوم ظهور في المقدمة</span>
+        </div>
+
+        <p class="sub-section-title">اختر الباقة</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="sub-grid">
+                {% for p in packages %}
+                <label class="sub-plan {% if p.popular %}sub-popular{% endif %}">
+                    <input type="radio" name="stars" value="{{ p.stars }}" hidden>
+                    {% if p.popular %}<div class="sub-popular-badge">الأكثر مبيعاً</div>{% endif %}
+                    <div class="sub-plan-top">
+                        <span class="sub-emoji">{{ p.emoji }}</span>
+                        <span class="sub-name">{{ p.label }}</span>
+                    </div>
+                    <div class="sub-plan-info">
+                        <span class="sub-stars">{{ p.stars }} <small>نجمة</small></span>
+                        <span class="sub-days">{{ p.days }}</span>
+                    </div>
+                    <div class="sub-plan-price">
+                        <span class="sub-price-num">{{ p.price }}</span>
+                        <span class="sub-price-cur">ريال</span>
+                    </div>
+                    {% if p.save %}
+                    <div class="sub-plan-save">{{ p.save }}</div>
+                    {% endif %}
+                    <div class="sub-plan-buy">اختيار</div>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="sub-compare">
+                <div class="sub-compare-row sub-compare-header">
+                    <span class="sub-clabel">الميزة</span>
+                    {% for p in packages %}
+                    <span class="sub-cval">{{ p.stars }}</span>
+                    {% endfor %}
+                </div>
+                <div class="sub-compare-row">
+                    <span class="sub-clabel">السعر</span>
+                    {% for p in packages %}
+                    <span class="sub-cval">{{ p.price }} ريال</span>
+                    {% endfor %}
+                </div>
+                <div class="sub-compare-row">
+                    <span class="sub-clabel">سعر النجمة</span>
+                    {% for p in packages %}
+                    <span class="sub-cval">{{ p.per_star }} ريال</span>
+                    {% endfor %}
+                </div>
+                <div class="sub-compare-row">
+                    <span class="sub-clabel">أيام تميز</span>
+                    {% for p in packages %}
+                    <span class="sub-cval">{{ p.days }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit" class="sub-btn">💳 اشتري الآن</button>
+            <a href="{% url 'profile' %}" class="sub-back">رجوع</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.sub-plan').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.sub-plan').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+    });
+</script>
+{% endblock %}

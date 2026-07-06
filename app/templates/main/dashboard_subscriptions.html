@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاشتراكات - لوحة التحكم</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="messages-bar">
+        {% for msg in messages %}
+        <div class="msg {{ msg.tags }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-sidebar-header">
+                <span class="dash-logo">⚙️</span>
+                <h3>لوحة التحكم</h3>
+            </div>
+            <a href="{% url 'dashboard' %}" class="dash-link"><span class="dash-link-icon">📊</span> الإحصائيات</a>
+            <a href="{% url 'dashboard_users' %}" class="dash-link"><span class="dash-link-icon">👥</span> المستخدمين</a>
+            <a href="{% url 'dashboard_ads' %}" class="dash-link"><span class="dash-link-icon">📋</span> الإعلانات</a>
+            <a href="{% url 'dashboard_subscriptions' %}" class="dash-link active"><span class="dash-link-icon">💳</span> الاشتراكات</a>
+            <div class="dash-divider"></div>
+            <a href="{% url 'home' %}" class="dash-link"><span class="dash-link-icon">🏠</span> العودة للموقع</a>
+        </aside>
+
+        <main class="dash-content">
+            <div class="dash-header">
+                <h2>💳 الاشتراكات</h2>
+                <p class="dash-subtitle">خطط اشتراك المستخدمين — {{ subscriptions.paginator.count }} اشتراك</p>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>المستخدم</th>
+                            <th>الخطة</th>
+                            <th>الحالة</th>
+                            <th>تاريخ البداية</th>
+                            <th>تاريخ النهاية</th>
+                            <th>أقصى إعلانات</th>
+                            <th>النجوم</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in subscriptions %}
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="user-avatar-sm">
+                                        {% if s.user.profile.photo %}
+                                        <img src="{{ s.user.profile.photo.url }}">
+                                        {% else %}
+                                        <span class="avatar-letter">{{ s.user.first_name|first|default:s.user.username|first }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <span>{{ s.user.username }}</span>
+                                </div>
+                            </td>
+                            <td><span class="plan-badge plan-{{ s.plan }}">{{ s.get_plan_display }}</span></td>
+                            <td>{% if s.is_active %}<span class="status-badge status-active">نشط</span>{% else %}<span class="status-badge status-archived">غير نشط</span>{% endif %}</td>
+                            <td class="td-date">{{ s.start_date|date:"Y-m-d" }}</td>
+                            <td class="td-date">{{ s.end_date|date:"Y-m-d"|default:"دائم" }}</td>
+                            <td class="td-views">{{ s.max_ads }}</td>
+                            <td class="td-views">{{ s.stars }} ⭐</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="7" class="td-empty">لا توجد اشتراكات</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if subscriptions.paginator.num_pages > 1 %}
+            <div class="pagination" style="margin:1rem 0">
+                {% if subscriptions.has_previous %}
+                <a href="?page={{ subscriptions.previous_page_number }}" class="page-link">‹ السابق</a>
+                {% endif %}
+                {% for n in subscriptions.paginator.page_range %}
+                <a href="?page={{ n }}" class="page-link {% if n == subscriptions.number %}active{% endif %}">{{ n }}</a>
+                {% endfor %}
+                {% if subscriptions.has_next %}
+                <a href="?page={{ subscriptions.next_page_number }}" class="page-link">التالي ›</a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="dash-section-divider"></div>
+
+            <div class="dash-header" style="margin-top:2rem">
+                <h2>⭐ باقات النجوم</h2>
+                <p class="dash-subtitle">إدارة عروض بيع النجوم في متجر الاشتراكات</p>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>النجوم</th>
+                            <th>السعر</th>
+                            <th>مميزة</th>
+                            <th>فعالة</th>
+                            <th>تاريخ الإضافة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in all_packages %}
+                        <tr>
+                            <td class="td-views">{{ p.stars }} ⭐</td>
+                            <td><span class="plan-badge" style="background:#e8f5e9;color:#2e7d32">{{ p.price }} ريال</span></td>
+                            <td>{% if p.is_popular %}<span class="status-badge status-active">نعم</span>{% else %}<span class="status-badge status-archived">لا</span>{% endif %}</td>
+                            <td>{% if p.is_active %}<span class="status-badge status-active">نشط</span>{% else %}<span class="status-badge status-archived">معطل</span>{% endif %}</td>
+                            <td class="td-date">{{ p.created_at|date:"Y-m-d" }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="dash-btn-icon edit-pkg" data-id="{{ p.id }}" data-stars="{{ p.stars }}" data-price="{{ p.price }}" data-popular="{{ p.is_popular|yesno:'1,0' }}" data-active="{{ p.is_active|yesno:'1,0' }}" title="تعديل">✏️</button>
+                                    <form method="post" style="display:inline" onsubmit="return confirm('حذف الباقة؟')">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="pkg_id" value="{{ p.id }}">
+                                        <button class="dash-btn-icon delete" title="حذف">🗑️</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="td-empty">لا توجد باقات. أضف الباقة الأولى!</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="dash-btn-primary" id="show-add-pkg" style="margin-top:1rem">➕ إضافة باقة جديدة</button>
+
+            <div class="dash-form-card" id="add-pkg-form" style="display:none;margin-top:1rem">
+                <h3>إضافة باقة جديدة</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+                    <div class="dash-form-row">
+                        <div class="dash-field">
+                            <label>عدد النجوم</label>
+                            <input type="number" name="stars" min="1" class="dash-input" required placeholder="مثال: 3">
+                        </div>
+                        <div class="dash-field">
+                            <label>السعر (ريال)</label>
+                            <input type="number" name="price" min="0.01" step="0.01" class="dash-input" required placeholder="مثال: 5">
+                        </div>
+                    </div>
+                    <label class="dash-checkbox">
+                        <input type="checkbox" name="is_popular">
+                        <span>باقة الأكثر مبيعاً</span>
+                    </label>
+                    <div class="dash-form-actions">
+                        <button type="submit" class="dash-btn-primary">💾 حفظ</button>
+                        <button type="button" class="dash-btn-secondary" id="cancel-add-pkg">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="dash-form-card" id="edit-pkg-form" style="display:none;margin-top:1rem">
+                <h3>تعديل الباقة</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="pkg_id" id="edit-pkg-id">
+                    <div class="dash-form-row">
+                        <div class="dash-field">
+                            <label>عدد النجوم</label>
+                            <input type="number" name="stars" id="edit-stars" min="1" class="dash-input" required>
+                        </div>
+                        <div class="dash-field">
+                            <label>السعر (ريال)</label>
+                            <input type="number" name="price" id="edit-price" min="0.01" step="0.01" class="dash-input" required>
+                        </div>
+                    </div>
+                    <label class="dash-checkbox">
+                        <input type="checkbox" name="is_popular" id="edit-popular">
+                        <span>باقة الأكثر مبيعاً</span>
+                    </label>
+                    <label class="dash-checkbox">
+                        <input type="checkbox" name="is_active" id="edit-active" checked>
+                        <span>فعالة (تظهر في المتجر)</span>
+                    </label>
+                    <div class="dash-form-actions">
+                        <button type="submit" class="dash-btn-primary">💾 حفظ التغييرات</button>
+                        <button type="button" class="dash-btn-secondary" id="cancel-edit-pkg">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('show-add-pkg').addEventListener('click', function() {
+            document.getElementById('add-pkg-form').style.display = 'block';
+            this.style.display = 'none';
+        });
+        document.getElementById('cancel-add-pkg').addEventListener('click', function() {
+            document.getElementById('add-pkg-form').style.display = 'none';
+            document.getElementById('show-add-pkg').style.display = 'inline-block';
+        });
+        document.querySelectorAll('.edit-pkg').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('edit-pkg-id').value = this.dataset.id;
+                document.getElementById('edit-stars').value = this.dataset.stars;
+                document.getElementById('edit-price').value = this.dataset.price;
+                document.getElementById('edit-popular').checked = this.dataset.popular === '1';
+                document.getElementById('edit-active').checked = this.dataset.active === '1';
+                document.getElementById('edit-pkg-form').style.display = 'block';
+            });
+        });
+        document.getElementById('cancel-edit-pkg').addEventListener('click', function() {
+            document.getElementById('edit-pkg-form').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>

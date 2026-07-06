@@ -1,0 +1,23 @@
+<div class="my-ad-item">
+    <div class="my-ad-img">
+        {% if ad.image_0 %}
+            <img src="{{ ad.image_0.url }}">
+        {% else %}
+            <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
+        {% endif %}
+    </div>
+    <div class="my-ad-info">
+        <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>
+        <p class="my-ad-purpose">{{ ad.purpose }} › {{ ad.section }} › {{ ad.specialty }}</p>
+        <p class="my-ad-text">{{ ad.text_ar|truncatechars:120 }}</p>
+        <p class="my-ad-date">{{ ad.created_at|date:"Y-m-d" }}</p>
+    </div>
+    <div class="my-ad-stats">
+        <span class="ad-view-count">👁 {{ ad.views }}</span>
+    </div>
+    <div class="my-ad-actions">
+        <a href="{% url 'promote_ad' ad.id %}" class="ad-action promote" title="تميز الإعلان">⭐ تميز</a>
+        <a href="{% url 'pause_ad' ad.id %}" class="ad-action pause" title="إيقاف/نشر">⏸ إيقاف/نشر</a>
+        <a href="{% url 'edit_ad' ad.id %}" class="ad-action edit" title="تعديل">✏️ تعديل</a>
+    </div>
+</div>

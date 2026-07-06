@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإعلانات - لوحة التحكم</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-right">
+            <a href="{% url 'home' %}" class="logo">أطلب</a>
+        </div>
+        <div class="nav-left">
+            <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
+            <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <aside class="dash-sidebar">
+            <div class="dash-sidebar-header">
+                <span class="dash-logo">⚙️</span>
+                <h3>لوحة التحكم</h3>
+            </div>
+            <a href="{% url 'dashboard' %}" class="dash-link"><span class="dash-link-icon">📊</span> الإحصائيات</a>
+            <a href="{% url 'dashboard_users' %}" class="dash-link"><span class="dash-link-icon">👥</span> المستخدمين</a>
+            <a href="{% url 'dashboard_ads' %}" class="dash-link active"><span class="dash-link-icon">📋</span> الإعلانات</a>
+            <a href="{% url 'dashboard_subscriptions' %}" class="dash-link"><span class="dash-link-icon">💳</span> الاشتراكات</a>
+            <div class="dash-divider"></div>
+            <a href="{% url 'home' %}" class="dash-link"><span class="dash-link-icon">🏠</span> العودة للموقع</a>
+        </aside>
+
+        <main class="dash-content">
+            <div class="dash-header">
+                <h2>📋 الإعلانات</h2>
+                <p class="dash-subtitle">جميع إعلانات المنصة — {{ ads.paginator.count }} إعلان</p>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>القسم</th>
+                            <th>المستخدم</th>
+                            <th>الحالة</th>
+                            <th>المشاهدات</th>
+                            <th>التاريخ</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad in ads %}
+                        <tr>
+                            <td class="td-title"><a href="{% url 'ad_detail' ad.id %}">{{ ad.title|default:ad.text_ar|truncatechars:25 }}</a></td>
+                            <td><span class="tag-purpose">{{ ad.purpose }}</span></td>
+                            <td>{{ ad.section }}</td>
+                            <td>{{ ad.user.username }}</td>
+                            <td><span class="status-badge status-{{ ad.status }}">{{ ad.status }}</span></td>
+                            <td class="td-views">{{ ad.views }}</td>
+                            <td class="td-date">{{ ad.created_at|date:"Y-m-d" }}</td>
+                            <td>
+                                <div class="action-cell">
+                                    <a href="{% url 'dashboard_ad_action' ad.id 'approve' %}" class="dash-action approve" title="نشر">✅</a>
+                                    <a href="{% url 'dashboard_ad_action' ad.id 'pending' %}" class="dash-action pending" title="إيقاف">⏸</a>
+                                    <a href="{% url 'dashboard_ad_action' ad.id 'archive' %}" class="dash-action archive" title="أرشفة">📦</a>
+                                    <a href="{% url 'dashboard_ad_action' ad.id 'delete' %}" class="dash-action delete" title="حذف" onclick="return confirm('حذف الإعلان؟')">🗑</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="8" class="td-empty">لا توجد إعلانات</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if ads.paginator.num_pages > 1 %}
+            <div class="pagination" style="margin-top:1rem">
+                {% if ads.has_previous %}
+                <a href="?page={{ ads.previous_page_number }}" class="page-link">‹ السابق</a>
+                {% endif %}
+                {% for n in ads.paginator.page_range %}
+                <a href="?page={{ n }}" class="page-link {% if n == ads.number %}active{% endif %}">{{ n }}</a>
+                {% endfor %}
+                {% if ads.has_next %}
+                <a href="?page={{ ads.next_page_number }}" class="page-link">التالي ›</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+</body>
+</html>

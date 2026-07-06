@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load static i18n %}
+{% block title %}{% trans "إعلانات" %} {{ owner.first_name|default:owner.username }} - {% trans "أطلب" %}{% endblock %}
+{% block content %}
+
+<div class="user-page-wrap">
+    <div class="user-profile-card">
+        <div class="user-profile-avatar">
+            {% if owner_profile and owner_profile.photo %}
+            <img src="{{ owner_profile.photo.url }}" alt="{{ owner.first_name }}">
+            {% else %}
+            <div class="user-profile-letter">{{ owner.first_name|first|default:owner.username|first }}</div>
+            {% endif %}
+        </div>
+        <div class="user-profile-info">
+            <h1>{{ owner.first_name|default:owner.username }}</h1>
+            <p>{% trans "عدد الإعلانات" %}: {{ owner_ads_count }}</p>
+        </div>
+    </div>
+
+    <div class="user-ads-section">
+        <div class="user-ads-header">
+            <h2>{% trans "إعلانات" %} {{ owner.first_name|default:owner.username }}</h2>
+            <span>{{ ads.paginator.count }} {% trans "إعلان" %}</span>
+        </div>
+
+        <div class="ads-grid">
+            {% for ad in ads %}
+            <a href="{% url 'ad_detail' ad.id %}" class="ad-card {% if ad.is_featured %}featured{% endif %}">
+                {% if ad.is_featured %}<div class="featured-ribbon">⭐ {% trans "مميز" %}</div>{% endif %}
+                <div class="ad-img-wrap">
+                    {% if ad.image_0 %}
+                    <img src="{{ ad.image_0.url }}" alt="{% trans 'إعلان' %}">
+                    {% else %}
+                    <div class="ad-placeholder">{{ ad.purpose|slice:":2" }}</div>
+                    {% endif %}
+                </div>
+                <div class="ad-body">
+                    <h4>{{ ad.title|default:ad.text_ar|truncatechars:40 }}</h4>
+                    <p class="ad-text">{{ ad.text_ar|truncatechars:80 }}</p>
+                    <p class="ad-price">{{ ad.purpose }}</p>
+                    <p class="ad-meta">{{ ad.specialty }} | {{ ad.created_at|timesince }}</p>
+                </div>
+            </a>
+            {% empty %}
+            <div class="ad-empty">{% trans "لا توجد إعلانات بعد" %}</div>
+            {% endfor %}
+        </div>
+
+        {% if ads.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if ads.has_previous %}
+            <a href="?page={{ ads.previous_page_number }}" class="page-link">‹ {% trans "السابق" %}</a>
+            {% endif %}
+            {% for n in ads.paginator.page_range %}
+            <a href="?page={{ n }}" class="page-link {% if n == ads.number %}active{% endif %}">{{ n }}</a>
+            {% endfor %}
+            {% if ads.has_next %}
+            <a href="?page={{ ads.next_page_number }}" class="page-link">{% trans "التالي" %} ›</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <a href="javascript:history.back()" class="back-btn" style="display:inline-flex;margin:1rem 0">← {% trans "رجوع" %}</a>
+</div>
+
+{% endblock %}
