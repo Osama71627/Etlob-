@@ -38,93 +38,36 @@
                 <div class="form-section">
                     <h3>تحديد غرض الإعلان</h3>
                     <div class="dropdown-wrap">
-                        <button type="button" class="dropdown-btn" data-target="purpose">
+                        <button type="button" class="dropdown-btn" id="purposeBtn">
                             <span>اختر غرض الإعلان</span>
                             <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
                         </button>
-                        <ul class="dropdown-menu" data-name="purpose">
-                            <li class="has-sub" data-value="عقارات">
-                                <span>🏠 عقارات</span>
-                                <ul class="sub-menu">
-                                    <li data-sub-value="شقة">شقة</li>
-                                    <li data-sub-value="فيلا">فيلا</li>
-                                    <li data-sub-value="أرض">أرض</li>
-                                    <li data-sub-value="محل تجاري">محل تجاري</li>
-                                </ul>
-                            </li>
-                            <li class="has-sub" data-value="سيارات">
-                                <span>🚗 سيارات</span>
-                                <ul class="sub-menu">
-                                    <li data-sub-value="تويوتا">تويوتا</li>
-                                    <li data-sub-value="هوندا">هوندا</li>
-                                    <li data-sub-value="نيسان">نيسان</li>
-                                    <li data-sub-value="مرسيدس">مرسيدس</li>
-                                </ul>
-                            </li>
-                            <li class="has-sub" data-value="وظائف">
-                                <span>💼 وظائف</span>
-                                <ul class="sub-menu">
-                                    <li data-sub-value="اعلان عن وظيفة شاغرة">اعلان عن وظيفة شاغرة</li>
-                                    <li data-sub-value="ابحث عن عمل">ابحث عن عمل</li>
-                                    <li data-sub-value="عرض خدمة">عرض خدمة</li>
-                                </ul>
-                            </li>
-                            <li class="has-sub" data-value="خدمات">
-                                <span>🛠️ خدمات</span>
-                                <ul class="sub-menu">
-                                    <li data-sub-value="تنظيف">تنظيف</li>
-                                    <li data-sub-value="صيانة">صيانة</li>
-                                    <li data-sub-value="نقل">نقل</li>
-                                    <li data-sub-value="توصيل">توصيل</li>
-                                </ul>
-                            </li>
-                            <li class="has-sub" data-value="منوعات">
-                                <span>📦 منوعات</span>
-                                <ul class="sub-menu">
-                                    <li data-sub-value="أثاث">أثاث</li>
-                                    <li data-sub-value="إلكترونيات">إلكترونيات</li>
-                                    <li data-sub-value="ملابس">ملابس</li>
-                                    <li data-sub-value="حيوانات">حيوانات</li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <input type="hidden" name="purpose" value="">
+                        <ul class="dropdown-menu" id="purposeMenu"></ul>
+                        <input type="hidden" name="purpose" id="purposeInput" value="">
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3>حدد القسم المناسب لعرض الإعلان</h3>
+                <div class="form-section" id="sectionSection" style="display:none;">
+                    <h3>حدد القسم المناسب</h3>
                     <div class="dropdown-wrap">
-                        <button type="button" class="dropdown-btn" data-target="section">
-                            <span>اختر القسم المناسب</span>
+                        <button type="button" class="dropdown-btn" id="sectionBtn">
+                            <span>اختر القسم</span>
                             <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
                         </button>
-                        <ul class="dropdown-menu" data-name="section">
-                            <li data-value="عقارات">🏠 عقارات</li>
-                            <li data-value="سيارات">🚗 سيارات</li>
-                            <li data-value="وظائف">💼 وظائف</li>
-                            <li data-value="خدمات">🛠️ خدمات</li>
-                            <li data-value="منوعات">📦 منوعات</li>
-                        </ul>
-                        <input type="hidden" name="section" value="">
+                        <ul class="dropdown-menu" id="sectionMenu"></ul>
+                        <input type="hidden" name="section" id="sectionInput" value="">
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3>أين تريد عرض إعلانك</h3>
+                <div class="form-section" id="specialtySection" style="display:none;">
+                    <h3>اختر التخصص</h3>
                     <div class="dropdown-wrap">
-                        <button type="button" class="dropdown-btn" data-target="specialty">
-                            <span>اختر المجال</span>
+                        <button type="button" class="dropdown-btn" id="specialtyBtn">
+                            <span>اختر التخصص</span>
                             <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
                         </button>
-                        <ul class="dropdown-menu" data-name="specialty">
-                            <li data-value="البرمجة">💻 البرمجة</li>
-                            <li data-value="التصميم">🎨 التصميم</li>
-                            <li data-value="الكمبيوتر">🖥️ الكمبيوتر</li>
-                            <li data-value="الهندسة">🏗️ الهندسة</li>
-                            <li data-value="المحاسبة">📊 المحاسبة</li>
-                        </ul>
-                        <input type="hidden" name="specialty" value="">
+                        <ul class="dropdown-menu" id="specialtyMenu"></ul>
+                        <input type="hidden" name="specialty" id="specialtyInput" value="">
                     </div>
                 </div>
 
@@ -196,50 +139,101 @@
     </div>
 
     <script>
-        document.querySelectorAll('.dropdown-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const menu = this.nextElementSibling;
-                const isOpen = menu.classList.contains('open');
-                document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
-                if (!isOpen) menu.classList.add('open');
-            });
-        });
+        const PURPOSES = {{ purposes_json|safe }};
+        const emojis = {
+            'وظائف': '💼', 'خدمات': '🛠️', 'عقارات': '🏠', 'سيارات': '🚗',
+            'أجهزة': '📱', 'حيوانات': '🐾', 'هوايات': '🎯', 'ملابس': '👕', 'أخرى': '📦'
+        };
 
-        document.querySelectorAll('.sub-menu li').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const subVal = this.dataset.subValue;
-                const parentLi = this.closest('.has-sub');
-                const purposeMenu = parentLi.closest('.dropdown-menu');
-                const purposeName = purposeMenu.dataset.name;
-                const purposeVal = parentLi.dataset.value;
-                const purposeBtn = purposeMenu.previousElementSibling;
-                const parentLabel = parentLi.querySelector('span').textContent.trim();
-                purposeBtn.querySelector('span').textContent = parentLabel + ' › ' + subVal;
-                document.querySelector(`input[name="${purposeName}"]`).value = purposeVal;
-                document.querySelector('input[name="section"]').value = subVal;
-                const sectionBtn = document.querySelector('[data-target="section"] + ul + input');
-                if (sectionBtn) sectionBtn.value = subVal;
-                purposeMenu.classList.remove('open');
-            });
-        });
-
-        document.querySelectorAll('.dropdown-menu:not(.has-sub) > li, .dropdown-menu[data-name="section"] > li, .dropdown-menu[data-name="specialty"] > li').forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (this.classList.contains('has-sub')) return;
-                const menu = this.closest('.dropdown-menu');
-                const name = menu.dataset.name;
-                const btn = menu.previousElementSibling;
-                const val = this.dataset.value;
-                btn.querySelector('span').textContent = this.textContent.trim();
-                document.querySelector(`input[name="${name}"]`).value = val;
-                menu.classList.remove('open');
-            });
-        });
-
-        document.addEventListener('click', function() {
+        function closeAllDropdowns() {
             document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+        }
+
+        function toggleDropdown(btn, menu) {
+            const isOpen = menu.classList.contains('open');
+            closeAllDropdowns();
+            if (!isOpen) menu.classList.add('open');
+        }
+
+        document.addEventListener('click', closeAllDropdowns);
+
+        function buildMenu(menuEl, items, onClick) {
+            menuEl.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item.label || item;
+                li.dataset.value = item.value || item;
+                if (item.emoji) li.textContent = item.emoji + ' ' + li.textContent;
+                li.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    onClick(this.dataset.value, this.textContent.trim());
+                    closeAllDropdowns();
+                });
+                menuEl.appendChild(li);
+            });
+        }
+
+        const purposeBtn = document.getElementById('purposeBtn');
+        const purposeMenu = document.getElementById('purposeMenu');
+        const purposeInput = document.getElementById('purposeInput');
+
+        const purposeKeys = Object.keys(PURPOSES);
+        const purposeItems = purposeKeys.map(k => ({ label: k, value: k, emoji: emojis[k] || '' }));
+        buildMenu(purposeMenu, purposeItems, function(val, label) {
+            purposeInput.value = val;
+            purposeBtn.querySelector('span').textContent = label;
+            const sections = Object.keys(PURPOSES[val] || {});
+            const sectionSection = document.getElementById('sectionSection');
+            const sectionBtn = document.getElementById('sectionBtn');
+            const sectionMenu = document.getElementById('sectionMenu');
+            const sectionInput = document.getElementById('sectionInput');
+            sectionInput.value = '';
+            sectionBtn.querySelector('span').textContent = 'اختر القسم';
+            document.getElementById('specialtySection').style.display = 'none';
+            document.getElementById('specialtyInput').value = '';
+
+            if (sections.length > 0) {
+                sectionSection.style.display = 'block';
+                const secItems = sections.map(s => ({ label: s, value: s }));
+                buildMenu(sectionMenu, secItems, function(sVal, sLabel) {
+                    sectionInput.value = sVal;
+                    sectionBtn.querySelector('span').textContent = sLabel;
+                    const specialties = PURPOSES[val][sVal] || [];
+                    const specSection = document.getElementById('specialtySection');
+                    const specBtn = document.getElementById('specialtyBtn');
+                    const specMenu = document.getElementById('specialtyMenu');
+                    const specInput = document.getElementById('specialtyInput');
+                    specInput.value = '';
+                    if (specialties.length > 0) {
+                        specSection.style.display = 'block';
+                        specBtn.querySelector('span').textContent = 'اختر التخصص';
+                        const specItems = specialties.map(sp => ({ label: sp, value: sp }));
+                        buildMenu(specMenu, specItems, function(spVal, spLabel) {
+                            specInput.value = spVal;
+                            specBtn.querySelector('span').textContent = spLabel;
+                        });
+                    } else {
+                        specSection.style.display = 'none';
+                    }
+                });
+            } else {
+                sectionSection.style.display = 'none';
+            }
+        });
+
+        purposeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown(this, purposeMenu);
+        });
+
+        document.getElementById('sectionBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown(this, document.getElementById('sectionMenu'));
+        });
+
+        document.getElementById('specialtyBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown(this, document.getElementById('specialtyMenu'));
         });
 
         document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {

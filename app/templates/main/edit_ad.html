@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load static %}
 {% block title %}تعديل الإعلان - أطلب{% endblock %}
 {% block navbar %}
     <nav class="navbar">
@@ -30,141 +31,262 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <div class="form-group">
-                    <label>عنوان الإعلان</label>
-                    <input type="text" name="title" value="{{ ad.title }}" required class="form-input">
+                <div class="form-section">
+                    <h3>تحديد غرض الإعلان</h3>
+                    <div class="dropdown-wrap">
+                        <button type="button" class="dropdown-btn" id="purposeBtn">
+                            <span>{% if ad.purpose %}{{ ad.purpose }}{% else %}اختر غرض الإعلان{% endif %}</span>
+                            <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
+                        </button>
+                        <ul class="dropdown-menu" id="purposeMenu"></ul>
+                        <input type="hidden" name="purpose" id="purposeInput" value="{{ ad.purpose }}">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>الغرض من الإعلان</label>
-                    <select name="purpose" required class="form-input" id="purpose-select">
-                        <option value="">-- اختر الغرض --</option>
-                        {% for p in purposes_list %}
-                        <option value="{{ p }}" {% if ad.purpose == p %}selected{% endif %}>{{ p }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="form-section" id="sectionSection" style="{% if ad.section %}display:block{% else %}display:none{% endif %};">
+                    <h3>حدد القسم المناسب</h3>
+                    <div class="dropdown-wrap">
+                        <button type="button" class="dropdown-btn" id="sectionBtn">
+                            <span>{% if ad.section %}{{ ad.section }}{% else %}اختر القسم{% endif %}</span>
+                            <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
+                        </button>
+                        <ul class="dropdown-menu" id="sectionMenu"></ul>
+                        <input type="hidden" name="section" id="sectionInput" value="{{ ad.section }}">
+                    </div>
                 </div>
 
-                <div class="form-group" id="section-group" style="display:none;">
-                    <label>القسم</label>
-                    <select name="section" class="form-input" id="section-select">
-                        <option value="">-- اختر القسم --</option>
-                    </select>
+                <div class="form-section" id="specialtySection" style="{% if ad.specialty %}display:block{% else %}display:none{% endif %};">
+                    <h3>اختر التخصص</h3>
+                    <div class="dropdown-wrap">
+                        <button type="button" class="dropdown-btn" id="specialtyBtn">
+                            <span>{% if ad.specialty %}{{ ad.specialty }}{% else %}اختر التخصص{% endif %}</span>
+                            <svg class="dd-arrow" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M4 6l4 4 4-4H4z"/></svg>
+                        </button>
+                        <ul class="dropdown-menu" id="specialtyMenu"></ul>
+                        <input type="hidden" name="specialty" id="specialtyInput" value="{{ ad.specialty }}">
+                    </div>
                 </div>
 
-                <div class="form-group" id="specialty-group" style="display:none;">
-                    <label>التخصص</label>
-                    <select name="specialty" class="form-input" id="specialty-select">
-                        <option value="">-- اختر التخصص --</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>تفاصيل الإعلان (بالعربية)</label>
-                    <textarea name="text_ar" required class="form-input" rows="5">{{ ad.text_ar }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>تفاصيل الإعلان (بالإنجليزية)</label>
-                    <textarea name="text_en" required class="form-input" rows="5">{{ ad.text_en }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>الصور الحالية (اختياري)</label>
-                    <div class="upload-grid">
+                <div class="form-section">
+                    <h3>الصور</h3>
+                    <p class="field-note">الصورة الأولى هي غلاف الإعلان</p>
+                    <div class="upload-grid" id="uploadGrid">
                         <label class="upload-box" data-index="0">
                             <input type="file" name="image_0" accept="image/*" hidden>
-                            <div class="upload-placeholder">{% if ad.image_0 %}<img src="{{ ad.image_0.url }}">{% else %}📷{% endif %}</div>
+                            <div class="upload-placeholder">{% if ad.image_0 %}<img src="{{ ad.image_0.url }}">{% else %}+{% endif %}</div>
                         </label>
                         <label class="upload-box" data-index="1">
                             <input type="file" name="image_1" accept="image/*" hidden>
-                            <div class="upload-placeholder">{% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% else %}📷{% endif %}</div>
+                            <div class="upload-placeholder">{% if ad.image_1 %}<img src="{{ ad.image_1.url }}">{% else %}+{% endif %}</div>
                         </label>
                         <label class="upload-box" data-index="2">
                             <input type="file" name="image_2" accept="image/*" hidden>
-                            <div class="upload-placeholder">{% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% else %}📷{% endif %}</div>
+                            <div class="upload-placeholder">{% if ad.image_2 %}<img src="{{ ad.image_2.url }}">{% else %}+{% endif %}</div>
                         </label>
                         <label class="upload-box" data-index="3">
                             <input type="file" name="image_3" accept="image/*" hidden>
-                            <div class="upload-placeholder">{% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% else %}📷{% endif %}</div>
+                            <div class="upload-placeholder">{% if ad.image_3 %}<img src="{{ ad.image_3.url }}">{% else %}+{% endif %}</div>
                         </label>
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>رقم الجوال</label>
-                        <input type="text" name="contact_phone" class="form-input" value="{{ ad.contact_phone }}">
+                <div class="form-section">
+                    <h3>نص الإعلان</h3>
+                    <div class="field-group">
+                        <label class="field-label">عنوان الإعلان</label>
+                        <input type="text" name="title" class="form-input" value="{{ ad.title }}" required>
                     </div>
-                    <div class="form-group">
-                        <label>البريد الإلكتروني</label>
-                        <input type="email" name="contact_email" class="form-input" value="{{ ad.contact_email }}">
+                    <div class="field-group">
+                        <label class="field-label">نص الإعلان بالعربية</label>
+                        <textarea name="text_ar" class="form-textarea" rows="4" required>{{ ad.text_ar }}</textarea>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">بالإنجليزية</label>
+                        <textarea name="text_en" class="form-textarea" rows="4" required>{{ ad.text_en }}</textarea>
                     </div>
                 </div>
 
-                <div class="form-actions">
-                    <button type="submit" name="action" value="draft" class="btn-draft">💾 حفظ كمسودة</button>
-                    <button type="submit" name="action" value="publish" class="btn-publish">📢 إعادة النشر</button>
+                <div class="form-section">
+                    <h3>معلومات الاتصال</h3>
+                    <div class="contact-row">
+                        <div class="field-group flex-1">
+                            <label class="field-label">رقم الهاتف</label>
+                            <input type="text" name="contact_phone" class="form-input" value="{{ ad.contact_phone }}">
+                        </div>
+                        <div class="field-group flex-1">
+                            <label class="field-label">البريد الإلكتروني</label>
+                            <input type="email" name="contact_email" class="form-input" value="{{ ad.contact_email }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions three-btns">
+                    <button type="submit" name="action" value="draft" class="btn-outline">💾 حفظ كمسودة</button>
+                    <button type="submit" name="action" value="publish" class="btn-primary">📢 إعادة النشر</button>
+                    <a href="{% url 'profile' %}" class="btn-outline danger">✕ رجوع</a>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        const purposes = {{ purposes_json|safe }};
+        const PURPOSES = {{ purposes_json|safe }};
+        const emojis = {
+            'وظائف': '💼', 'خدمات': '🛠️', 'عقارات': '🏠', 'سيارات': '🚗',
+            'أجهزة': '📱', 'حيوانات': '🐾', 'هوايات': '🎯', 'ملابس': '👕', 'أخرى': '📦'
+        };
+        const currentPurpose = '{{ ad.purpose|default:"" }}';
         const currentSection = '{{ ad.section|default:"" }}';
         const currentSpecialty = '{{ ad.specialty|default:"" }}';
-        const purposeSelect = document.getElementById('purpose-select');
-        const sectionGroup = document.getElementById('section-group');
-        const sectionSelect = document.getElementById('section-select');
-        const specialtyGroup = document.getElementById('specialty-group');
-        const specialtySelect = document.getElementById('specialty-select');
 
-        purposeSelect.addEventListener('change', function() {
-            const val = this.value;
-            sectionSelect.innerHTML = '<option value="">-- اختر القسم --</option>';
-            specialtySelect.innerHTML = '<option value="">-- اختر التخصص --</option>';
-            specialtyGroup.style.display = 'none';
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+        }
 
-            if (val && purposes[val]) {
-                sectionGroup.style.display = 'block';
-                const sections = Object.keys(purposes[val]);
-                sections.forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s;
-                    opt.textContent = s;
-                    if (s === currentSection) opt.selected = true;
-                    sectionSelect.appendChild(opt);
+        function toggleDropdown(btn, menu) {
+            const isOpen = menu.classList.contains('open');
+            closeAllDropdowns();
+            if (!isOpen) menu.classList.add('open');
+        }
+
+        document.addEventListener('click', closeAllDropdowns);
+
+        function buildMenu(menuEl, items, onClick) {
+            menuEl.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item.label || item;
+                li.dataset.value = item.value || item;
+                if (item.emoji) li.textContent = item.emoji + ' ' + li.textContent;
+                li.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    onClick(this.dataset.value, this.textContent.trim());
+                    closeAllDropdowns();
                 });
-                if (currentSection) {
-                    sectionSelect.dispatchEvent(new Event('change', {bubbles: true}));
+                menuEl.appendChild(li);
+            });
+        }
+
+        const purposeBtn = document.getElementById('purposeBtn');
+        const purposeMenu = document.getElementById('purposeMenu');
+        const purposeInput = document.getElementById('purposeInput');
+
+        const purposeKeys = Object.keys(PURPOSES);
+        const purposeItems = purposeKeys.map(k => ({ label: k, value: k, emoji: emojis[k] || '' }));
+        buildMenu(purposeMenu, purposeItems, function(val, label) {
+            purposeInput.value = val;
+            purposeBtn.querySelector('span').textContent = label;
+            const sections = Object.keys(PURPOSES[val] || {});
+            const sectionSection = document.getElementById('sectionSection');
+            const sectionBtn = document.getElementById('sectionBtn');
+            const sectionMenu = document.getElementById('sectionMenu');
+            const sectionInput = document.getElementById('sectionInput');
+            sectionInput.value = '';
+            sectionBtn.querySelector('span').textContent = 'اختر القسم';
+            document.getElementById('specialtySection').style.display = 'none';
+            document.getElementById('specialtyInput').value = '';
+
+            if (sections.length > 0) {
+                sectionSection.style.display = 'block';
+                const secItems = sections.map(s => ({ label: s, value: s }));
+                buildMenu(sectionMenu, secItems, function(sVal, sLabel) {
+                    sectionInput.value = sVal;
+                    sectionBtn.querySelector('span').textContent = sLabel;
+                    const specialties = PURPOSES[val][sVal] || [];
+                    const specSection = document.getElementById('specialtySection');
+                    const specBtn = document.getElementById('specialtyBtn');
+                    const specMenu = document.getElementById('specialtyMenu');
+                    const specInput = document.getElementById('specialtyInput');
+                    specInput.value = '';
+                    if (specialties.length > 0) {
+                        specSection.style.display = 'block';
+                        specBtn.querySelector('span').textContent = 'اختر التخصص';
+                        const specItems = specialties.map(sp => ({ label: sp, value: sp }));
+                        buildMenu(specMenu, specItems, function(spVal, spLabel) {
+                            specInput.value = spVal;
+                            specBtn.querySelector('span').textContent = spLabel;
+                        });
+                    } else {
+                        specSection.style.display = 'none';
+                    }
+                });
+            } else {
+                sectionSection.style.display = 'none';
+            }
+        });
+
+        purposeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown(this, purposeMenu);
+        });
+
+        document.getElementById('sectionBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown(this, document.getElementById('sectionMenu'));
+        });
+
+        document.getElementById('specialtyBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown(this, document.getElementById('specialtyMenu'));
+        });
+
+        if (currentPurpose) {
+            const purposeKeys = Object.keys(PURPOSES);
+            const matched = purposeKeys.find(k => k === currentPurpose);
+            if (matched) {
+                purposeBtn.querySelector('span').textContent = (emojis[matched] || '') + ' ' + matched;
+                purposeInput.value = matched;
+                const sections = Object.keys(PURPOSES[matched] || {});
+                const sectionSection = document.getElementById('sectionSection');
+                const sectionBtn = document.getElementById('sectionBtn');
+                const sectionMenu = document.getElementById('sectionMenu');
+                const sectionInput = document.getElementById('sectionInput');
+
+                if (sections.length > 0) {
+                    sectionSection.style.display = 'block';
+                    const secItems = sections.map(s => ({ label: s, value: s }));
+                    buildMenu(sectionMenu, secItems, function(sVal, sLabel) {
+                        sectionInput.value = sVal;
+                        sectionBtn.querySelector('span').textContent = sLabel;
+                        const specialties = PURPOSES[matched][sVal] || [];
+                        const specSection = document.getElementById('specialtySection');
+                        const specBtn = document.getElementById('specialtyBtn');
+                        const specMenu = document.getElementById('specialtyMenu');
+                        const specInput = document.getElementById('specialtyInput');
+                        specInput.value = '';
+                        if (specialties.length > 0) {
+                            specSection.style.display = 'block';
+                            specBtn.querySelector('span').textContent = 'اختر التخصص';
+                            const specItems = specialties.map(sp => ({ label: sp, value: sp }));
+                            buildMenu(specMenu, specItems, function(spVal, spLabel) {
+                                specInput.value = spVal;
+                                specBtn.querySelector('span').textContent = spLabel;
+                            });
+                        } else {
+                            specSection.style.display = 'none';
+                        }
+                    });
+                    if (currentSection) {
+                        sectionBtn.querySelector('span').textContent = currentSection;
+                        sectionInput.value = currentSection;
+                        const specialties = PURPOSES[matched][currentSection] || [];
+                        const specSection = document.getElementById('specialtySection');
+                        const specBtn = document.getElementById('specialtyBtn');
+                        const specMenu = document.getElementById('specialtyMenu');
+                        const specInput = document.getElementById('specialtyInput');
+                        if (specialties.length > 0) {
+                            specSection.style.display = 'block';
+                            specBtn.querySelector('span').textContent = currentSpecialty || 'اختر التخصص';
+                            specInput.value = currentSpecialty || '';
+                            const specItems = specialties.map(sp => ({ label: sp, value: sp }));
+                            buildMenu(specMenu, specItems, function(spVal, spLabel) {
+                                specInput.value = spVal;
+                                specBtn.querySelector('span').textContent = spLabel;
+                            });
+                        }
+                    }
                 }
-            } else {
-                sectionGroup.style.display = 'none';
             }
-        });
-
-        sectionSelect.addEventListener('change', function() {
-            const purposeVal = purposeSelect.value;
-            const sectionVal = this.value;
-            specialtySelect.innerHTML = '<option value="">-- اختر التخصص --</option>';
-
-            if (purposeVal && sectionVal && purposes[purposeVal] && purposes[purposeVal][sectionVal]) {
-                specialtyGroup.style.display = 'block';
-                purposes[purposeVal][sectionVal].forEach(sp => {
-                    const opt = document.createElement('option');
-                    opt.value = sp;
-                    opt.textContent = sp;
-                    if (sp === currentSpecialty) opt.selected = true;
-                    specialtySelect.appendChild(opt);
-                });
-            } else {
-                specialtyGroup.style.display = 'none';
-            }
-        });
-
-        if (purposeSelect.value) {
-            purposeSelect.dispatchEvent(new Event('change', {bubbles: true}));
         }
 
         document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {

@@ -10,6 +10,62 @@ from datetime import timedelta
 from .models import Ad, Profile, Subscription, Notification, Favorite
 from django.urls import reverse
 from django.core.paginator import Paginator
+import json
+
+PURPOSES = {
+    "وظائف": {
+        "اعلان عن وظيفة شاغرة": ["برمجة", "تصميم", "هندسة", "محاسبة", "تسويق", "مبيعات", "إدارة", "طب", "تمريض", "تعليم", "سياحة", "مطاعم", "خدمة عملاء", "سكرتارية", "أمن", "نظافة", "مقاولات", "اتصالات", "طاقة"],
+        "ابحث عن عمل": ["برمجة", "تصميم", "هندسة", "محاسبة", "تسويق", "مبيعات", "إدارة", "طب", "تمريض", "تعليم", "سياحة", "مطاعم", "خدمة عملاء", "سكرتارية"],
+        "عرض خدمة": ["استشارات", "تدريب", "تصميم", "برمجة", "تسويق إلكتروني", "ترجمة", "كتابة", "تصوير"]
+    },
+    "خدمات": {
+        "تنظيف": [], "صيانة": [], "نقل": [], "توصيل": [], "ضيافة": [], "تعليم خصوصي": [],
+        "رعاية أطفال": [], "رعاية مسنين": [], "تصليح": [], "بناء": [], "دهان": [],
+        "سباكة": [], "كهرباء": [], "نجارة": [], "حدادة": [], "عناية بالحيوانات": []
+    },
+    "عقارات": {
+        "شقة": ["إيجار", "تمليك"], "فيلا": ["إيجار", "تمليك"], "أرض": ["سكني", "تجاري", "زراعي"],
+        "محل تجاري": ["إيجار", "تمليك"], "مكتب": ["إيجار", "تمليك"], "مستودع": ["إيجار", "تمليك"],
+        "استراحة": ["إيجار", "تمليك"], "شاليه": ["إيجار", "تمليك"], "مزرعة": ["إيجار", "تمليك"],
+        "عمارة": ["تمليك"], "دور": ["إيجار", "تمليك"], "غرفة": ["إيجار"]
+    },
+    "سيارات": {
+        "تويوتا": [], "هوندا": [], "نيسان": [], "مرسيدس": [], "بي إم دبليو": [], "أودي": [],
+        "فورد": [], "شيفروليه": [], "هيونداي": [], "كيا": [], "ميتسوبيشي": [], "مازدا": [],
+        "لكزس": [], "جيب": [], "رنج روفر": [], "فولكس": [], "بورش": [], "دراجة نارية": [],
+        "شاحنة": [], "معدات ثقيلة": [], "قوارب": []
+    },
+    "أجهزة": {
+        "جوال": ["آيفون", "سامسونج", "هواوي", "شاومي", "أوبو", "نوكيا", "آخر"],
+        "لاب توب": ["ديل", "إتش بي", "لينوفو", "آبل", "آسوس", "آيسر", "آخر"],
+        "كمبيوتر": ["مكتبي", "ألعاب", "خادم", "آخر"],
+        "تابلت": ["آيباد", "سامسونج", "آخر"],
+        "تلفزيون": ["LED", "OLED", "QLED"],
+        "كاميرا": ["كانون", "نيكون", "سوني"],
+        "سماعات": [], "ساعة ذكية": ["آبل", "سامسونج", "آخر"], "إكسسوارات": []
+    },
+    "حيوانات": {
+        "كلاب": [], "قطط": [], "طيور": [], "خيول": [], "أسماك": [], "أغنام": [],
+        "أبقار": [], "إبل": [], "دجاج": [], "ماعز": [], "أرانب": [],
+        "زواحف": [], "مستلزمات حيوانات": []
+    },
+    "هوايات": {
+        "كتب": ["روايات", "تعليمية", "دينية", "أطفال", "أخرى"],
+        "ألعاب": ["بلاي ستيشن", "إكس بوكس", "نينتندو", "PC", "ألعاب لوحية"],
+        "رياضة": ["أوزان", "جري", "سباحة", "كرة قدم", "كرة سلة", "تنس", "دراجات", "تخييم"],
+        "موسيقى": ["آلات موسيقية", "أجهزة صوت"],
+        "فن": ["رسم", "نحت", "خط عربي", "تصوير"],
+        "طبخ": ["أدوات مطبخ", "وصفات"],
+        "أعمال يدوية": [], "مجموعات": ["طوابع", "عملات", "أنتيكات", "تحف"]
+    },
+    "ملابس": {
+        "رجالية": ["بدل", "جاكيت", "قميص", "تي شيرت", "بنطلون", "جينز", "أحذية", "ساعات", "إكسسوارات"],
+        "نسائية": ["فساتين", "عباءات", "بلوزة", "تنورة", "جينز", "أحذية", "شنط", "إكسسوارات", "مجوهرات"],
+        "أطفال": ["ملابس أطفال", "أحذية أطفال", "مستلزمات رضع"],
+        "مستعمل": []
+    },
+    "أخرى": {}
+}
 
 def admin_check(user):
     if not user.is_authenticated:
@@ -198,11 +254,7 @@ def home(request):
     q = request.GET.get('q', '')
     sort = request.GET.get('sort', '-created_at')
 
-    if search_in == 'وظائف':
-        ads_list = ads_list.filter(purpose='وظائف')
-    elif search_in == 'خدمات':
-        ads_list = ads_list.filter(section='ابحث عن عمل')
-    elif search_in:
+    if search_in:
         ads_list = ads_list.filter(purpose=search_in)
     if section:
         ads_list = ads_list.filter(section=section)
@@ -225,7 +277,7 @@ def home(request):
         'sort': sort,
     }
 
-    return render(request, 'main/home.html', {'ads': ads, 'filter_data': filter_data})
+    return render(request, 'main/home.html', {'ads': ads, 'filter_data': filter_data, 'purposes_json': json.dumps(PURPOSES, ensure_ascii=False)})
 
 def login_view(request):
     if request.method == 'POST':
@@ -347,7 +399,7 @@ def edit_ad_view(request, ad_id):
             notify_new_ad(ad)
         messages.success(request, 'تم تحديث الإعلان بنجاح')
         return redirect('profile')
-    return render(request, 'main/edit_ad.html', {'ad': ad})
+    return render(request, 'main/edit_ad.html', {'ad': ad, 'purposes_json': json.dumps(PURPOSES, ensure_ascii=False), 'purposes_list': list(PURPOSES.keys())})
 
 def create_ad_view(request):
     if request.method == 'POST':
@@ -360,14 +412,14 @@ def create_ad_view(request):
         ad.text_en = request.POST.get('text_en', '')
         ad.contact_phone = request.POST.get('contact_phone', '')
         ad.contact_email = request.POST.get('contact_email', '')
-        ad.status = 'publish'
+        action = request.POST.get('action', '')
+        ad.status = 'draft' if action == 'draft' else 'publish'
         for i in range(4):
             f = request.FILES.get(f'image_{i}')
             if f:
                 setattr(ad, f'image_{i}', f)
         ad.save()
-        action = request.POST.get('action', '')
-        if action == 'promote':
+        if action == 'publish_and_promote':
             notify_new_ad(ad)
             messages.success(request, 'تم نشر الإعلان، اختر خطة التميز الآن')
             return redirect('promote_ad', ad_id=ad.id)
@@ -377,7 +429,7 @@ def create_ad_view(request):
         else:
             messages.success(request, 'تم حفظ الإعلان كمسودة')
         return redirect('home')
-    return render(request, 'main/create_ad.html')
+    return render(request, 'main/create_ad.html', {'purposes_json': json.dumps(PURPOSES, ensure_ascii=False)})
 
 
 @login_required

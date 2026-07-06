@@ -119,25 +119,15 @@
 
             <div class="filter-group">
                 <label>{% trans "القسم" %}</label>
-                <select name="section" class="filter-input">
+                <select name="section" class="filter-input" id="filterSection">
                     <option value="">{% trans "كل الأقسام" %}</option>
-                    <option value="عقارات" {% if filter_data.section == 'عقارات' %}selected{% endif %}>{% trans "عقارات" %}</option>
-                    <option value="سيارات" {% if filter_data.section == 'سيارات' %}selected{% endif %}>{% trans "سيارات" %}</option>
-                    <option value="وظائف" {% if filter_data.section == 'وظائف' %}selected{% endif %}>{% trans "وظائف" %}</option>
-                    <option value="خدمات" {% if filter_data.section == 'خدمات' %}selected{% endif %}>{% trans "خدمات" %}</option>
-                    <option value="منوعات" {% if filter_data.section == 'منوعات' %}selected{% endif %}>{% trans "منوعات" %}</option>
                 </select>
             </div>
 
             <div class="filter-group">
                 <label>{% trans "المجال" %}</label>
-                <select name="specialty" class="filter-input">
+                <select name="specialty" class="filter-input" id="filterSpecialty">
                     <option value="">{% trans "كل المجالات" %}</option>
-                    <option value="البرمجة" {% if filter_data.specialty == 'البرمجة' %}selected{% endif %}>{% trans "البرمجة" %}</option>
-                    <option value="التصميم" {% if filter_data.specialty == 'التصميم' %}selected{% endif %}>{% trans "التصميم" %}</option>
-                    <option value="الكمبيوتر" {% if filter_data.specialty == 'الكمبيوتر' %}selected{% endif %}>{% trans "الكمبيوتر" %}</option>
-                    <option value="الهندسة" {% if filter_data.specialty == 'الهندسة' %}selected{% endif %}>{% trans "الهندسة" %}</option>
-                    <option value="المحاسبة" {% if filter_data.specialty == 'المحاسبة' %}selected{% endif %}>{% trans "المحاسبة" %}</option>
                 </select>
             </div>
 
@@ -273,6 +263,9 @@
                     this.classList.add('active');
                     select.value = filterValue;
                 }
+                if (filterName === 'search_in') {
+                    populateSections(select.value);
+                }
             });
         });
 
@@ -298,5 +291,56 @@
         window.addEventListener('scroll', function() {
             document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 20);
         });
+
+        const PURPOSES = {{ purposes_json|safe }};
+        const sectionSelect = document.getElementById('filterSection');
+        const specialtySelect = document.getElementById('filterSpecialty');
+        const searchInSelect = document.querySelector('select[name="search_in"]');
+
+        function populateSections(purpose) {
+            sectionSelect.innerHTML = '<option value="">{% trans "كل الأقسام" %}</option>';
+            specialtySelect.innerHTML = '<option value="">{% trans "كل المجالات" %}</option>';
+            if (purpose && PURPOSES[purpose]) {
+                const sections = Object.keys(PURPOSES[purpose]);
+                sections.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = s;
+                    if (s === '{{ filter_data.section|escapejs }}') opt.selected = true;
+                    sectionSelect.appendChild(opt);
+                });
+                if ('{{ filter_data.section|escapejs }}') {
+                    populateSpecialties(purpose, '{{ filter_data.section|escapejs }}');
+                }
+            }
+        }
+
+        function populateSpecialties(purpose, section) {
+            specialtySelect.innerHTML = '<option value="">{% trans "كل المجالات" %}</option>';
+            if (purpose && section && PURPOSES[purpose] && PURPOSES[purpose][section]) {
+                const specialties = PURPOSES[purpose][section];
+                specialties.forEach(sp => {
+                    const opt = document.createElement('option');
+                    opt.value = sp;
+                    opt.textContent = sp;
+                    if (sp === '{{ filter_data.specialty|escapejs }}') opt.selected = true;
+                    specialtySelect.appendChild(opt);
+                });
+            }
+        }
+
+        searchInSelect.addEventListener('change', function() {
+            populateSections(this.value);
+        });
+
+        sectionSelect.addEventListener('change', function() {
+            const purpose = searchInSelect.value;
+            populateSpecialties(purpose, this.value);
+        });
+
+        const initialPurpose = '{{ filter_data.search_in|escapejs }}';
+        if (initialPurpose && PURPOSES[initialPurpose]) {
+            populateSections(initialPurpose);
+        }
     </script>
 {% endblock %}
