@@ -173,6 +173,11 @@ body {
         box-shadow: none;
         border: 1px solid #eee;
         margin-top: 0.25rem;
+        display: none;
+    }
+    .dropdown-menu.show,
+    .dropdown-menu.open {
+        display: block;
     }
 }
 
@@ -1180,6 +1185,10 @@ a.ad-card {
         border: 1px solid #e0e0e0;
         margin-top: 0.25rem;
         width: 100%;
+        display: none;
+    }
+    .dropdown-menu.open {
+        display: block;
     }
     .sub-menu {
         position: static;
@@ -1190,6 +1199,7 @@ a.ad-card {
         padding-right: 1rem;
         margin-top: 0.25rem;
         min-width: auto;
+        display: block;
     }
     .has-sub:hover .sub-menu {
         transform: none;
