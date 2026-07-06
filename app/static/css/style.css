@@ -3424,6 +3424,10 @@ textarea.form-input {
         padding: 0 0.75rem;
         margin: 0.75rem auto;
     }
+    .detail-main {
+        max-width: 100%;
+        margin: 0 auto;
+    }
     .detail-body {
         padding: 1rem 1.25rem;
     }
@@ -3432,12 +3436,17 @@ textarea.form-input {
     }
     .gallery-main img {
         height: 300px;
+        width: 100%;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
     }
     .gallery-nav {
         opacity: 1;
     }
     .gallery-thumbs {
         padding: 0.5rem 0.75rem;
+        justify-content: center;
     }
     .thumb-wrap {
         width: 56px;
@@ -3445,6 +3454,9 @@ textarea.form-input {
     }
     .related-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    .sidebar-card {
+        padding: 1rem 1.25rem;
     }
 }
 
