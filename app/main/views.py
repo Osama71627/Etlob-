@@ -401,6 +401,7 @@ def edit_ad_view(request, ad_id):
         return redirect('profile')
     return render(request, 'main/edit_ad.html', {'ad': ad, 'purposes_json': json.dumps(PURPOSES, ensure_ascii=False), 'purposes_list': list(PURPOSES.keys())})
 
+@login_required
 def create_ad_view(request):
     if request.method == 'POST':
         ad = Ad(user=request.user)
