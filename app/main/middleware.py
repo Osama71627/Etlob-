@@ -6,8 +6,10 @@ class ForceArabicMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        translation.activate('ar')
-        request.LANGUAGE_CODE = 'ar'
-        request.session['django_language'] = 'ar'
+        lang = request.session.get('django_language')
+        if not lang:
+            translation.activate('ar')
+            request.LANGUAGE_CODE = 'ar'
+            request.session['django_language'] = 'ar'
         response = self.get_response(request)
         return response
