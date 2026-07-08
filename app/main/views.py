@@ -510,7 +510,7 @@ def promote_ad_view(request, ad_id):
                     ad.featured_until = timezone.now() + timedelta(days=p['days'])
                     ad.save()
                     messages.success(request, f'تم تمييز الإعلان لمدة {p["days"]} يوم')
-                    return redirect('profile')
+                    return redirect('home')
                 else:
                     messages.error(request, f'رصيدك غير كافٍ. تحتاج {plan_stars} ⭐ لديك {sub.stars} ⭐ فقط')
                     return redirect('subscription_shop')

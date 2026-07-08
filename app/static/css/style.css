@@ -1756,6 +1756,30 @@ textarea.form-input {
     border-color: #ccc;
 }
 
+.my-ad-item.featured {
+    border: 2px solid #ffd700;
+    background: linear-gradient(135deg, #fffdf0, #fff);
+}
+
+.my-ad-item.featured:hover {
+    border-color: #ffb300;
+    box-shadow: 0 4px 16px rgba(255,215,0,0.2);
+}
+
+.my-ad-featured-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: linear-gradient(135deg, #ffd700, #ffb300);
+    color: #1a1a2e;
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(255,215,0,0.4);
+}
+
 .my-ad-img {
     width: 60px;
     height: 60px;
@@ -1766,6 +1790,7 @@ textarea.form-input {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .my-ad-img img {
