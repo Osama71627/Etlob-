@@ -6,6 +6,7 @@
             <span class="my-ad-icon">{{ ad.purpose|slice:":2" }}</span>
         {% endif %}
         {% if ad.is_featured %}<span class="my-ad-featured-badge">⭐ مميز</span>{% endif %}
+        {% if ad.id in unviewed_new_ids %}<span class="my-ad-new-badge">جديد</span>{% endif %}
     </div>
     <div class="my-ad-info">
         <a href="{% url 'ad_detail' ad.id %}" class="my-ad-link"><h4>{{ ad.title|default:ad.text_ar|truncatechars:60 }}</h4></a>

@@ -28,6 +28,7 @@
             {% for ad in ads %}
             <a href="{% url 'ad_detail' ad.id %}" class="ad-card {% if ad.is_featured %}featured{% endif %}">
                 {% if ad.is_featured %}<div class="featured-ribbon">⭐ {% trans "مميز" %}</div>{% endif %}
+                {% if ad.id in unviewed_new_ids %}<div class="new-ribbon">{% trans "جديد" %}</div>{% endif %}
                 <div class="ad-img-wrap">
                     {% if ad.image_0 %}
                     <img src="{{ ad.image_0.url }}" alt="{% trans 'إعلان' %}">

@@ -268,6 +268,14 @@ def notify_expiring_featured():
     expiring.update(featured_expiry_notified=True)
 
 
+def get_unviewed_new_ids(request, queryset):
+    now = timezone.now()
+    cutoff = now - timedelta(hours=48)
+    new_ids = set(queryset.filter(created_at__gte=cutoff).values_list('id', flat=True))
+    viewed = set(request.session.get('viewed_new_ads', []))
+    return list(new_ids - viewed)
+
+
 def home(request):
     # Expire featured ads past their featured_until
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
@@ -296,6 +304,8 @@ def home(request):
     page = request.GET.get('page', 1)
     ads = paginator.get_page(page)
 
+    unviewed_new_ids = get_unviewed_new_ids(request, ads_list)
+
     filter_data = {
         'search_in': search_in,
         'section': section,
@@ -304,7 +314,7 @@ def home(request):
         'sort': sort,
     }
 
-    return render(request, 'main/home.html', {'ads': ads, 'filter_data': filter_data, 'purposes_json': json.dumps(PURPOSES, ensure_ascii=False)})
+    return render(request, 'main/home.html', {'ads': ads, 'filter_data': filter_data, 'purposes_json': json.dumps(PURPOSES, ensure_ascii=False), 'unviewed_new_ids': unviewed_new_ids})
 
 def login_view(request):
     if request.method == 'POST':
@@ -362,18 +372,24 @@ def ad_detail_view(request, ad_id):
         ad.save(update_fields=['views'])
         viewed.append(ad_id)
         request.session['viewed_ads'] = viewed
+    viewed_new = request.session.get('viewed_new_ads', [])
+    if ad_id not in viewed_new:
+        viewed_new.append(ad_id)
+        request.session['viewed_new_ads'] = viewed_new
     is_fav = False
     if request.user.is_authenticated:
         is_fav = Favorite.objects.filter(user=request.user, ad=ad).exists()
     related_ads = Ad.objects.filter(status='publish', purpose=ad.purpose).exclude(id=ad.id).order_by('-created_at')[:4]
     owner_profile = getattr(ad.user, 'profile', None)
     owner_ads_count = Ad.objects.filter(user=ad.user, status='publish').count()
+    unviewed_new_ids = get_unviewed_new_ids(request, Ad.objects.filter(status='publish'))
     return render(request, 'main/ad_detail.html', {
         'ad': ad,
         'is_favorited': is_fav,
         'related_ads': related_ads,
         'owner_profile': owner_profile,
         'owner_ads_count': owner_ads_count,
+        'unviewed_new_ids': unviewed_new_ids,
     })
 
 def user_ads_view(request, username):
@@ -386,11 +402,13 @@ def user_ads_view(request, username):
     ads = paginator.get_page(page)
     owner_profile = getattr(owner, 'profile', None)
     owner_ads_count = Ad.objects.filter(user=owner, status='publish').count()
+    unviewed_new_ids = get_unviewed_new_ids(request, ads_list)
     return render(request, 'main/user_ads.html', {
         'owner': owner,
         'ads': ads,
         'owner_profile': owner_profile,
         'owner_ads_count': owner_ads_count,
+        'unviewed_new_ids': unviewed_new_ids,
     })
 
 def profile_view(request):
@@ -402,6 +420,7 @@ def profile_view(request):
     ads_draft = [a for a in user_ads_all if a.status == 'draft']
     ads_archived = [a for a in user_ads_all if a.status == 'archived']
     fav_ads = Ad.objects.filter(favorited_by__user=request.user).order_by('-favorited_by__created_at')
+    unviewed_new_ids = get_unviewed_new_ids(request, user_ads_all)
     return render(request, 'main/profile.html', {
         'user_ads_all': user_ads_all,
         'ads_active': ads_active,
@@ -409,6 +428,7 @@ def profile_view(request):
         'ads_draft': ads_draft,
         'ads_archived': ads_archived,
         'fav_ads': fav_ads,
+        'unviewed_new_ids': unviewed_new_ids,
     })
 
 def edit_ad_view(request, ad_id):

@@ -48,6 +48,7 @@
                     {% if ad.section %}<span class="tag tag-section">{{ ad.section }}</span>{% endif %}
                     {% if ad.specialty %}<span class="tag tag-specialty">{{ ad.specialty }}</span>{% endif %}
                     {% if ad.is_featured %}<span class="tag tag-featured">⭐ {% trans "مميز" %}</span>{% endif %}
+                    {% if ad.id in unviewed_new_ids %}<span class="tag tag-new">{% trans "جديد" %}</span>{% endif %}
                 </div>
 
                 <h1 class="detail-title">{{ ad.title|default:ad.text_ar }}</h1>
