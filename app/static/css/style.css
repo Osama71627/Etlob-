@@ -622,14 +622,14 @@ a.ad-card {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    background: linear-gradient(135deg, #e53935, #b71c1c);
     color: #fff;
     padding: 0.25rem 0.6rem;
     border-radius: 8px;
     font-size: 0.65rem;
     font-weight: 800;
     z-index: 2;
-    box-shadow: 0 2px 8px rgba(76,175,80,0.4);
+    box-shadow: 0 2px 8px rgba(229,57,53,0.4);
 }
 
 @media (max-width: 768px) {
@@ -1838,14 +1838,14 @@ textarea.form-input {
     position: absolute;
     bottom: 4px;
     right: 4px;
-    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    background: linear-gradient(135deg, #e53935, #b71c1c);
     color: #fff;
     padding: 0.15rem 0.4rem;
     border-radius: 6px;
     font-size: 0.55rem;
     font-weight: 800;
     z-index: 2;
-    box-shadow: 0 2px 6px rgba(76,175,80,0.4);
+    box-shadow: 0 2px 6px rgba(229,57,53,0.4);
 }
 
 .my-ad-img {
@@ -3278,9 +3278,9 @@ textarea.form-input {
 }
 
 .tag-new {
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    color: #2e7d32;
-    border: 1px solid #a5d6a7;
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+    border: 1px solid #ef9a9a;
     font-weight: 700;
 }
 

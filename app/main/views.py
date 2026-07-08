@@ -273,6 +273,10 @@ def get_unviewed_new_ids(request, queryset):
     now = timezone.now()
     cutoff = now - timedelta(hours=48)
     new_ids = set(queryset.filter(created_at__gte=cutoff).values_list('id', flat=True))
+    user = request.user
+    if user.is_authenticated and user.date_joined > cutoff:
+        cutoff = user.date_joined
+        new_ids = set(queryset.filter(created_at__gte=cutoff).values_list('id', flat=True))
     viewed = set(request.session.get('viewed_new_ads', []))
     return list(new_ids - viewed)
 
