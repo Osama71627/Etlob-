@@ -249,6 +249,9 @@ def dashboard_ad_action(request, ad_id, action):
     return redirect('dashboard_ads')
 
 def home(request):
+    # Expire featured ads past their featured_until
+    Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
+
     ads_list = Ad.objects.filter(status='publish')
 
     search_in = request.GET.get('search_in', '')
@@ -329,6 +332,7 @@ def logout_view(request):
     return redirect('home')
 
 def ad_detail_view(request, ad_id):
+    Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
     ad = get_object_or_404(Ad, id=ad_id)
     viewed = request.session.get('viewed_ads', [])
     if ad_id not in viewed:
@@ -351,6 +355,7 @@ def ad_detail_view(request, ad_id):
     })
 
 def user_ads_view(request, username):
+    Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
     owner = get_object_or_404(User, username=username)
     ads_list = Ad.objects.filter(user=owner, status='publish').order_by('-created_at')
     paginator = Paginator(ads_list, 20)
@@ -366,6 +371,7 @@ def user_ads_view(request, username):
     })
 
 def profile_view(request):
+    Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
     user_ads_all = Ad.objects.filter(user=request.user).order_by('-created_at')
     ads_active = [a for a in user_ads_all if a.status == 'publish']
     ads_pending = [a for a in user_ads_all if a.status == 'pending']
@@ -493,10 +499,10 @@ def promote_ad_view(request, ad_id):
 
     PLANS = [
         {'days': 1, 'stars': 1, 'label': 'يوم واحد', 'stars_label': '⭐'},
-        {'days': 3, 'stars': 2, 'label': '3 أيام', 'stars_label': '⭐⭐'},
-        {'days': 7, 'stars': 3, 'label': 'أسبوع', 'stars_label': '⭐⭐⭐'},
-        {'days': 15, 'stars': 5, 'label': '15 يوم', 'stars_label': '⭐⭐⭐⭐'},
-        {'days': 30, 'stars': 8, 'label': 'شهر كامل', 'stars_label': '⭐⭐⭐⭐⭐'},
+        {'days': 2, 'stars': 2, 'label': 'يومين', 'stars_label': '⭐⭐'},
+        {'days': 3, 'stars': 3, 'label': '3 أيام', 'stars_label': '⭐⭐⭐'},
+        {'days': 5, 'stars': 5, 'label': '5 أيام', 'stars_label': '⭐⭐⭐⭐⭐'},
+        {'days': 8, 'stars': 8, 'label': '8 أيام', 'stars_label': '⭐⭐⭐⭐⭐⭐⭐⭐'},
     ]
 
     if request.method == 'POST':
