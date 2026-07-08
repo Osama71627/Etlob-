@@ -248,9 +248,30 @@ def dashboard_ad_action(request, ad_id, action):
     ad.save()
     return redirect('dashboard_ads')
 
+def notify_expiring_featured():
+    now = timezone.now()
+    warning_window = now + timedelta(hours=1)
+    expiring = Ad.objects.filter(
+        is_featured=True,
+        featured_until__gte=now,
+        featured_until__lte=warning_window,
+        featured_expiry_notified=False
+    )
+    for ad in expiring:
+        Notification.objects.create(
+            user=ad.user,
+            type='warning',
+            title='⚠️ تميز الإعلان على وشك الانتهاء',
+            message=f'إعلانك "{ad.title}" سينتهي تميزه بعد ساعة. جدد تميزه الآن ليستمر ظهوره في المقدمة.',
+            url=reverse('promote_ad', args=[ad.id]),
+        )
+    expiring.update(featured_expiry_notified=True)
+
+
 def home(request):
     # Expire featured ads past their featured_until
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
+    notify_expiring_featured()
 
     ads_list = Ad.objects.filter(status='publish')
 
@@ -333,6 +354,7 @@ def logout_view(request):
 
 def ad_detail_view(request, ad_id):
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
+    notify_expiring_featured()
     ad = get_object_or_404(Ad, id=ad_id)
     viewed = request.session.get('viewed_ads', [])
     if ad_id not in viewed:
@@ -356,6 +378,7 @@ def ad_detail_view(request, ad_id):
 
 def user_ads_view(request, username):
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
+    notify_expiring_featured()
     owner = get_object_or_404(User, username=username)
     ads_list = Ad.objects.filter(user=owner, status='publish').order_by('-created_at')
     paginator = Paginator(ads_list, 20)
@@ -372,6 +395,7 @@ def user_ads_view(request, username):
 
 def profile_view(request):
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
+    notify_expiring_featured()
     user_ads_all = Ad.objects.filter(user=request.user).order_by('-created_at')
     ads_active = [a for a in user_ads_all if a.status == 'publish']
     ads_pending = [a for a in user_ads_all if a.status == 'pending']
@@ -514,6 +538,7 @@ def promote_ad_view(request, ad_id):
                     sub.save()
                     ad.is_featured = True
                     ad.featured_until = timezone.now() + timedelta(days=p['days'])
+                    ad.featured_expiry_notified = False
                     ad.save()
                     messages.success(request, f'تم تمييز الإعلان لمدة {p["days"]} يوم')
                     return redirect('home')

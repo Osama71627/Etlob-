@@ -88,6 +88,7 @@ class Ad(models.Model):
     views = models.PositiveIntegerField(default=0)
     is_featured = models.BooleanField(default=False, db_index=True)
     featured_until = models.DateTimeField(null=True, blank=True)
+    featured_expiry_notified = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.purpose} - {self.user.username}'
