@@ -198,6 +198,8 @@
                 buildMenu(sectionMenu, secItems, function(sVal, sLabel) {
                     sectionInput.value = sVal;
                     sectionBtn.querySelector('span').textContent = sLabel;
+                    const titleInput = document.querySelector('input[name="title"]');
+                    if (titleInput && !titleInput.dataset.manual) titleInput.value = sLabel;
                     const specialties = PURPOSES[val][sVal] || [];
                     const specSection = document.getElementById('specialtySection');
                     const specBtn = document.getElementById('specialtyBtn');
@@ -234,6 +236,10 @@
         document.getElementById('specialtyBtn').addEventListener('click', function(e) {
             e.stopPropagation();
             toggleDropdown(this, document.getElementById('specialtyMenu'));
+        });
+
+        document.querySelector('input[name="title"]').addEventListener('input', function() {
+            this.dataset.manual = '1';
         });
 
         document.querySelectorAll('.upload-box input[type="file"]').forEach(input => {
