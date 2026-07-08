@@ -83,6 +83,7 @@ class Ad(models.Model):
     text_en = models.TextField(blank=True)
     contact_phone = models.CharField(max_length=30, blank=True)
     contact_email = models.EmailField(blank=True)
+    is_whatsapp = models.BooleanField(default=False)
     status = models.CharField(max_length=10, default='draft', db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     views = models.PositiveIntegerField(default=0)

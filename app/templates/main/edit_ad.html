@@ -118,6 +118,10 @@
                             <input type="email" name="contact_email" class="form-input" value="{{ ad.contact_email }}">
                         </div>
                     </div>
+                    <label class="whatsapp-checkbox">
+                        <input type="checkbox" name="is_whatsapp" {% if ad.is_whatsapp %}checked{% endif %}>
+                        <span class="whatsapp-label">📱 هذا رقم واتساب</span>
+                    </label>
                 </div>
 
                 <div class="form-actions three-btns">

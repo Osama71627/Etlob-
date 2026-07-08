@@ -448,6 +448,7 @@ def edit_ad_view(request, ad_id):
         ad.text_en = request.POST.get('text_en', '')
         ad.contact_phone = request.POST.get('contact_phone', '')
         ad.contact_email = request.POST.get('contact_email', '')
+        ad.is_whatsapp = request.POST.get('is_whatsapp') == 'on'
         ad.status = 'publish' if request.POST.get('action') == 'publish' else 'draft'
         for i in range(4):
             f = request.FILES.get(f'image_{i}')
@@ -472,6 +473,7 @@ def create_ad_view(request):
         ad.text_en = request.POST.get('text_en', '')
         ad.contact_phone = request.POST.get('contact_phone', '')
         ad.contact_email = request.POST.get('contact_email', '')
+        ad.is_whatsapp = request.POST.get('is_whatsapp') == 'on'
         action = request.POST.get('action', '')
         ad.status = 'draft' if action == 'draft' else 'publish'
         for i in range(4):

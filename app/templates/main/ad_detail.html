@@ -98,10 +98,22 @@
             <!-- Contact Card -->
             <div class="sidebar-card contact-card">
                 <h3>📞 {% trans "معلومات الاتصال" %}</h3>
+                {% if ad.is_whatsapp and ad.contact_phone %}
+                <a href="https://wa.me/{{ ad.contact_phone|cut:'+'|cut:' '|cut:'-' }}" target="_blank" class="contact-btn whatsapp-btn" dir="ltr">
+                    <span class="contact-icon">💬</span>
+                    <span>{{ ad.contact_phone }}</span>
+                </a>
+                {% elif ad.contact_phone %}
                 <a href="tel:{{ ad.contact_phone }}" class="contact-btn phone-btn" dir="ltr">
                     <span class="contact-icon">📞</span>
-                    <span>{{ ad.contact_phone|default:_("غير متوفر") }}</span>
+                    <span>{{ ad.contact_phone }}</span>
                 </a>
+                {% else %}
+                <a class="contact-btn phone-btn disabled" dir="ltr">
+                    <span class="contact-icon">📞</span>
+                    <span>{% trans "غير متوفر" %}</span>
+                </a>
+                {% endif %}
                 <a href="mailto:{{ ad.contact_email }}" class="contact-btn email-btn">
                     <span class="contact-icon">✉️</span>
                     <span>{{ ad.contact_email|default:_("غير متوفر") }}</span>

@@ -1669,6 +1669,46 @@ textarea.form-input {
     flex: 1;
 }
 
+.whatsapp-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.whatsapp-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.whatsapp-label {
+    color: #25D366;
+    font-weight: 600;
+}
+
+.whatsapp-btn {
+    background: #e8f5e9;
+    color: #25D366;
+    border-color: #c8e6c9;
+}
+
+.whatsapp-btn:hover {
+    background: #25D366;
+    color: #fff;
+    border-color: #25D366;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37,211,102,0.2);
+}
+
+.contact-btn.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+}
+
 .field-note {
     font-size: 0.8rem;
     color: #888;
