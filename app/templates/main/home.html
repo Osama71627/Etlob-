@@ -158,14 +158,14 @@
             <div class="categories-section">
                 <h4>{% trans "لائحة الأقسام" %}</h4>
                 <a href="{% url 'home' %}" class="cat-link"><span class="cat-icon">📋</span> {% trans "الكل" %}</a>
-                <a href="{% url 'home' %}?q=حسابات" class="cat-link"><span class="cat-icon">📊</span> {% trans "حسابات" %}</a>
-                <a href="{% url 'home' %}?q=مبيعات" class="cat-link"><span class="cat-icon">📈</span> {% trans "مبيعات وتسويق" %}</a>
-                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🎨</span> {% trans "تصميم" %}</a>
-                <a href="{% url 'home' %}?specialty=البرمجة" class="cat-link"><span class="cat-icon">💻</span> {% trans "برمجة" %}</a>
-                <a href="{% url 'home' %}?specialty=الكمبيوتر" class="cat-link"><span class="cat-icon">🖥️</span> {% trans "كمبيوترات" %}</a>
-                <a href="{% url 'home' %}?section=خدمات" class="cat-link"><span class="cat-icon">✈️</span> {% trans "سياحة ومطاعم" %}</a>
-                <a href="{% url 'home' %}?q=طب" class="cat-link"><span class="cat-icon">🏥</span> {% trans "طب وتمريض" %}</a>
-                <a href="{% url 'home' %}?specialty=التصميم" class="cat-link"><span class="cat-icon">🌐</span> {% trans "تصميم مواقع" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&specialty=محاسبة" class="cat-link"><span class="cat-icon">📊</span> {% trans "حسابات" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&specialty=مبيعات" class="cat-link"><span class="cat-icon">📈</span> {% trans "مبيعات وتسويق" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&specialty=تصميم" class="cat-link"><span class="cat-icon">🎨</span> {% trans "تصميم" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&specialty=برمجة" class="cat-link"><span class="cat-icon">💻</span> {% trans "برمجة" %}</a>
+                <a href="{% url 'home' %}?search_in=أجهزة&section=كمبيوتر" class="cat-link"><span class="cat-icon">🖥️</span> {% trans "كمبيوترات" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&specialty=سياحة" class="cat-link"><span class="cat-icon">✈️</span> {% trans "سياحة ومطاعم" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&specialty=طب" class="cat-link"><span class="cat-icon">🏥</span> {% trans "طب وتمريض" %}</a>
+                <a href="{% url 'home' %}?search_in=وظائف&q=تصميم مواقع" class="cat-link"><span class="cat-icon">🌐</span> {% trans "تصميم مواقع" %}</a>
             </div>
         </aside>
 
@@ -346,8 +346,23 @@
         });
 
         const initialPurpose = '{{ filter_data.search_in|escapejs }}';
+        const initialSection = '{{ filter_data.section|escapejs }}';
+        const initialSpecialty = '{{ filter_data.specialty|escapejs }}';
+
         if (initialPurpose && PURPOSES[initialPurpose]) {
             populateSections(initialPurpose);
+            if (initialSection) {
+                populateSpecialties(initialPurpose, initialSection);
+            } else if (initialSpecialty) {
+                const sections = Object.keys(PURPOSES[initialPurpose]);
+                for (const s of sections) {
+                    if (PURPOSES[initialPurpose][s].includes(initialSpecialty)) {
+                        sectionSelect.value = s;
+                        populateSpecialties(initialPurpose, s);
+                        break;
+                    }
+                }
+            }
         }
     </script>
 {% endblock %}

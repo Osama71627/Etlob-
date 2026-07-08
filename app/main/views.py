@@ -296,7 +296,13 @@ def home(request):
     if specialty:
         ads_list = ads_list.filter(specialty=specialty)
     if q:
-        ads_list = (ads_list.filter(title__icontains=q) | ads_list.filter(text_ar__icontains=q)).distinct()
+        from django.db.models import Q
+        ads_list = ads_list.filter(
+            Q(title__icontains=q) |
+            Q(text_ar__icontains=q) |
+            Q(section__icontains=q) |
+            Q(specialty__icontains=q)
+        ).distinct()
 
     ads_list = ads_list.order_by('-is_featured', sort)
 
