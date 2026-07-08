@@ -332,11 +332,17 @@
 
         searchInSelect.addEventListener('change', function() {
             populateSections(this.value);
+            document.querySelector('.filter-form').submit();
         });
 
         sectionSelect.addEventListener('change', function() {
             const purpose = searchInSelect.value;
             populateSpecialties(purpose, this.value);
+            document.querySelector('.filter-form').submit();
+        });
+
+        specialtySelect.addEventListener('change', function() {
+            document.querySelector('.filter-form').submit();
         });
 
         const initialPurpose = '{{ filter_data.search_in|escapejs }}';
