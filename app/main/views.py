@@ -101,6 +101,7 @@ def notify_new_package(pkg):
     Notification.objects.bulk_create(notifs)
 
 @user_passes_test(admin_check, login_url='login')
+@user_passes_test(admin_check, login_url='login')
 def dashboard_view(request):
     total_users = User.objects.count()
     total_ads = Ad.objects.count()
@@ -128,6 +129,7 @@ def dashboard_users(request):
     users = paginator.get_page(page)
     return render(request, 'main/dashboard_users.html', {'users': users})
 
+@user_passes_test(admin_check, login_url='login')
 @user_passes_test(admin_check, login_url='login')
 def dashboard_ads(request):
     ads_list = Ad.objects.select_related('user').order_by('-created_at')
@@ -226,6 +228,7 @@ def dashboard_user_action(request, user_id, action):
         return redirect('dashboard_users')
     return redirect('dashboard_user_detail', user_id=user_id)
 
+@user_passes_test(admin_check, login_url='login')
 @user_passes_test(admin_check, login_url='login')
 def dashboard_ad_action(request, ad_id, action):
     ad = get_object_or_404(Ad, id=ad_id)
