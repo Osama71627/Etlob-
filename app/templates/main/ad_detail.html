@@ -1,5 +1,5 @@
 {% extends 'main/base.html' %}
-{% load static i18n %}
+{% load static i18n ad_tags %}
 {% block title %}{{ ad.title|default:ad.text_ar|truncatechars:30 }} - {% trans "أطلب" %}{% endblock %}
 {% block content %}
 
@@ -20,23 +20,21 @@
 
             <!-- Gallery -->
             <div class="detail-gallery">
-                {% with images=ad.image_0.url|default:'' %}
                 <div class="gallery-main">
-                    <img id="mainImage" src="{% if ad.image_0 %}{{ ad.image_0.url }}{% else %}{% static 'images/placeholder.svg' %}{% endif %}" alt="{{ ad.title }}">
-                    {% if ad.image_1 or ad.image_2 or ad.image_3 %}
+                    <img id="mainImage" src="{% if ad|has_img:0 %}{{ ad|img_url:0 }}{% else %}{% static 'images/placeholder.svg' %}{% endif %}" alt="{{ ad.title }}">
+                    {% if ad|has_img:1 or ad|has_img:2 or ad|has_img:3 %}
                     <button class="gallery-nav prev" onclick="galleryNav(-1)" aria-label="السابق">‹</button>
                     <button class="gallery-nav next" onclick="galleryNav(1)" aria-label="التالي">›</button>
                     {% endif %}
                 </div>
-                {% endwith %}
-                {% if ad.image_0 or ad.image_1 or ad.image_2 or ad.image_3 %}
+                {% if ad|has_img:0 or ad|has_img:1 or ad|has_img:2 or ad|has_img:3 %}
                 <div class="gallery-thumbs" id="galleryThumbs">
                     <div class="thumb-wrap active" data-index="0" onclick="galleryTo(0)">
-                        <img src="{% if ad.image_0 %}{{ ad.image_0.url }}{% endif %}" alt="">
+                        <img src="{{ ad|img_url:0 }}" alt="">
                     </div>
-                    {% if ad.image_1 %}<div class="thumb-wrap" data-index="1" onclick="galleryTo(1)"><img src="{{ ad.image_1.url }}" alt=""></div>{% endif %}
-                    {% if ad.image_2 %}<div class="thumb-wrap" data-index="2" onclick="galleryTo(2)"><img src="{{ ad.image_2.url }}" alt=""></div>{% endif %}
-                    {% if ad.image_3 %}<div class="thumb-wrap" data-index="3" onclick="galleryTo(3)"><img src="{{ ad.image_3.url }}" alt=""></div>{% endif %}
+                    {% if ad|has_img:1 %}<div class="thumb-wrap" data-index="1" onclick="galleryTo(1)"><img src="{{ ad|img_url:1 }}" alt=""></div>{% endif %}
+                    {% if ad|has_img:2 %}<div class="thumb-wrap" data-index="2" onclick="galleryTo(2)"><img src="{{ ad|img_url:2 }}" alt=""></div>{% endif %}
+                    {% if ad|has_img:3 %}<div class="thumb-wrap" data-index="3" onclick="galleryTo(3)"><img src="{{ ad|img_url:3 }}" alt=""></div>{% endif %}
                 </div>
                 {% endif %}
             </div>
@@ -167,10 +165,10 @@
 
 <script>
 var galleryImages = [
-    {% if ad.image_0 %}'{{ ad.image_0.url }}'{% else %}null{% endif %},
-    {% if ad.image_1 %}'{{ ad.image_1.url }}'{% else %}null{% endif %},
-    {% if ad.image_2 %}'{{ ad.image_2.url }}'{% else %}null{% endif %},
-    {% if ad.image_3 %}'{{ ad.image_3.url }}'{% else %}null{% endif %}
+    '{{ ad|img_url:0|escapejs }}',
+    '{{ ad|img_url:1|escapejs }}',
+    '{{ ad|img_url:2|escapejs }}',
+    '{{ ad|img_url:3|escapejs }}'
 ].filter(Boolean);
 
 var currentIdx = 0;

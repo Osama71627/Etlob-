@@ -94,6 +94,15 @@ class Ad(models.Model):
     def __str__(self):
         return f'{self.purpose} - {self.user.username}'
 
+    def get_image_url(self, index):
+        try:
+            img = getattr(self, f'image_{index}')
+            if img and img.name:
+                return img.url
+        except (ValueError, FileNotFoundError):
+            pass
+        return ''
+
 
 class StarPackage(models.Model):
     stars = models.IntegerField()
