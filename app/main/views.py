@@ -10,6 +10,7 @@ from datetime import timedelta
 from .models import Ad, Profile, Subscription, Notification, Favorite
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.views.decorators.cache import never_cache
 import json
 
 PURPOSES = {
@@ -276,6 +277,7 @@ def get_unviewed_new_ids(request, queryset):
     return list(new_ids - viewed)
 
 
+@never_cache
 def home(request):
     # Expire featured ads past their featured_until
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
@@ -398,6 +400,7 @@ def ad_detail_view(request, ad_id):
         'unviewed_new_ids': unviewed_new_ids,
     })
 
+@never_cache
 def user_ads_view(request, username):
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
     notify_expiring_featured()
@@ -417,6 +420,7 @@ def user_ads_view(request, username):
         'unviewed_new_ids': unviewed_new_ids,
     })
 
+@never_cache
 def profile_view(request):
     Ad.objects.filter(is_featured=True, featured_until__lt=timezone.now()).update(is_featured=False)
     notify_expiring_featured()
