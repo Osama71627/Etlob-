@@ -2097,7 +2097,7 @@ textarea.form-input {
 .dash-table-wrap {
     background: #fff;
     border-radius: 18px;
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 2px 16px rgba(0,0,0,0.04);
     border: 1px solid #f0f0f0;
     margin-bottom: 1.5rem;
@@ -2538,15 +2538,88 @@ textarea.form-input {
 @media (max-width: 768px) {
     .dashboard-layout {
         flex-direction: column;
-        padding: 1rem;
+        padding: 0.75rem;
+        gap: 0.75rem;
     }
     .dash-sidebar {
         width: 100%;
         min-width: unset;
         position: static;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0.5rem;
+        background: #1a1a2e;
+        border-radius: 14px;
+    }
+    .dash-sidebar-header {
+        display: none;
+    }
+    .dash-link {
+        padding: 0.45rem 0.7rem;
+        font-size: 0.78rem;
+        border-right: none;
+        border-radius: 8px;
+        gap: 0.35rem;
+    }
+    .dash-link.active {
+        border-right: none;
+        background: rgba(232,73,29,0.25);
+    }
+    .dash-divider {
+        display: none;
     }
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+    .stat-card {
+        padding: 1rem;
+    }
+    .stat-num {
+        font-size: 1.3rem;
+    }
+    .dash-content {
+        padding: 0;
+    }
+    .dash-header {
+        padding: 0.75rem 0;
+    }
+    .dash-header h2 {
+        font-size: 1.1rem;
+    }
+    .dash-table-wrap {
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    .dash-table th {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.65rem;
+        white-space: nowrap;
+    }
+    .dash-table td {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.72rem;
+        white-space: nowrap;
+    }
+    .action-cell {
+        gap: 0.2rem;
+    }
+    .dash-action {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+    .dash-action-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+    .dash-view-all {
+        font-size: 0.78rem;
+    }
+    .dash-section-header h3 {
+        font-size: 0.95rem;
     }
     .user-detail-card {
         flex-direction: column;
@@ -2555,6 +2628,9 @@ textarea.form-input {
     }
     .user-detail-grid {
         grid-template-columns: 1fr;
+    }
+    .dash-form-row {
+        flex-direction: column;
     }
 }
 

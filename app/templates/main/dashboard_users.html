@@ -12,8 +12,9 @@
     <nav class="navbar">
         <div class="nav-right">
             <a href="{% url 'home' %}" class="logo">أطلب</a>
+            <button class="nav-hamburger" onclick="toggleNavMenu()" aria-label="القائمة">☰</button>
         </div>
-        <div class="nav-left">
+        <div class="nav-left" id="navMenu">
             <a href="{% url 'profile' %}" class="nav-btn user-btn">👤 {{ user.username }}</a>
             <a href="{% url 'dashboard' %}" class="nav-btn">⚙️ الإدارة</a>
             <a href="{% url 'logout' %}" class="nav-btn">تسجيل خروج</a>
@@ -133,5 +134,10 @@
         </main>
     </div>
 
+<script>
+function toggleNavMenu() {
+    document.getElementById("navMenu").classList.toggle("open");
+}
+</script>
 </body>
 </html>
